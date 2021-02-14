@@ -592,7 +592,7 @@ def lilypond_harmonics(filename, string, octave=0, max_harmonic=16,
   line = lambda s: s + '\n'
 
   
-  suff = '{}{}{}'.format(string_name, chr(ord('a')+10+string_octave), chr(ord('a')+10+octave))
+  suff = '{}{}{}'.format(string_name, chr(ord('a')+string_octave), chr(ord('a')+octave))
 
   pre = ''
   pre += line('\\' + 'version "2.20.0"')
