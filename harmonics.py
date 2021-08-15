@@ -420,7 +420,9 @@ def note_positions_near_harmonic_number(h):
 
   OUTPUT:
 
-  - ordered list of pairs ``(n,e)``, one for each of the ``h-1`` nodes of the harmonic, where
+  - ordered list of pairs ``(n,m,e)`` where
+
+    - ``m`` is the index of the harmonic node; these will range over all numbers in [1,h-1] prime to h
 
     - ``n`` is the number of half steps above the open string of the
       note whose fingered location (in tempered pitch) is nearest the harmonic node
@@ -437,11 +439,11 @@ def note_positions_near_harmonic_number(h):
     >>> note_positions_near_harmonic_number(1)
     []
     >>> note_positions_near_harmonic_number(2)
-    [(12, 0)]
+    [(1, 12, 0)]
     >>> note_positions_near_harmonic_number(3)
-    [(7, 2), (19, 2)]
+    [(1, 7, 2), (2, 19, 2)]
     >>> note_positions_near_harmonic_number(4)
-    [(5, -2), (24, 0)]
+    [(1, 5, -2), (3, 24, 0)]
 
   """
   if h < 0:
@@ -452,7 +454,7 @@ def note_positions_near_harmonic_number(h):
     lg = log(h/m,HS)
     n = int(round(lg))
     e = int(round(100*(lg-n)))
-    notes.append((n,e))
+    notes.append((h-m,n,e))
   notes.reverse()
   return notes
 
@@ -480,28 +482,37 @@ def note_positions_near_harmonic_pitch(harmonic_pitch, strings=None, instrument=
 
   OUTPUT:
 
-  - List of 5-tuples (hoff, stringnum, hnum, fingnote, fingoff) of integers
-    indicating that harmonic ``hnum`` on string ``stringind`` (index into
-    ``strings``) sounds ``hoff`` cents higher (lower if negative) than
-    ``harmonic_note`` in tempered tuning, and has a node on the indicated string
-    at ``fingoff`` cents above (below if negative) the fingered note
-    ``fingnote`` given in scientific pitch notation.
+  - List of 5-tuples (hoff, stringnum, hnum, nodenum, fingnote, fingoff) of integers, where
+
+    - ``stringnum`` -- the number of the string on which the harmonic is fingered
+
+    - ``fingnote`` -- the nearest fingered note to the harmonic node
+
+    - ``fingoff`` -- number of cents above (below if negative) the fingered note
+      where the harmonic node occurs
+
+    - ``hnum`` -- the harmonic number
+
+    - ``nodenum`` -- number of the harmonic node (from 1 to hnum-1)
+
+    - ``hoff`` -- number of cents sharp (flat if negative) the harmonic sounds
+      relative to ``harmonic_pitch`` in tempered tuning
 
   EXAMPLES:
 
   Show all harmonics that sound like D one octave above middle C on the cello::
 
     >>> for hh in note_positions_near_harmonic_pitch('D5', instrument='cello'): print(hh)
-    (0, 1, 4, 'G3', -2)
-    (0, 1, 4, 'D5', 0)
-    (2, 2, 6, 'Bf2', 16)
-    (2, 2, 6, 'D5', 2)
-    (4, 3, 9, 'D2', 4)
-    (4, 3, 9, 'E2', 35)
-    (4, 3, 9, 'Bf2', 18)
-    (4, 3, 9, 'D3', 4)
-    (4, 3, 9, 'D4', 4)
-    (4, 3, 9, 'D5', 4)
+    (1, 'G3', -2, 4, 1, 0)
+    (1, 'D5', 0, 4, 3, 0)
+    (2, 'Bf2', 16, 6, 1, 2)
+    (2, 'D5', 2, 6, 5, 2)
+    (3, 'D2', 4, 9, 1, 4)
+    (3, 'E2', 35, 9, 2, 4)
+    (3, 'Bf2', 18, 9, 4, 4)
+    (3, 'D3', 4, 9, 5, 4)
+    (3, 'D4', 4, 9, 7, 4)
+    (3, 'D5', 4, 9, 8, 4)
 
   """
   if len([arg for arg in (strings, instrument) if arg is not None]) != 1:
@@ -529,10 +540,10 @@ def note_positions_near_harmonic_pitch(harmonic_pitch, strings=None, instrument=
     sh = int(round(HS**(h_note_num - s_note_num)))
     sh_num, sh_off = harmonic_interval(sh)
     if h_note_num != sh_num + s_note_num: continue
-    for note_num, note_off in note_positions_near_harmonic_number(sh):
+    for node_num, note_num, note_off in note_positions_near_harmonic_number(sh):
       note_num += s_note_num
       note = number_to_note(note_num)
-      hh.append((sh_off, s_ind, sh, note, note_off))
+      hh.append((s_ind, note, note_off, sh, node_num, sh_off))
   return hh
 
 
@@ -601,7 +612,7 @@ def print_harmonics(string, max_harmonic=16, octave=None):
       3  2  E5   ( +2 cents):    E5   ( +2 cents)
     <BLANKLINE>
       4  1  A5   ( +0 cents):    D4   ( -2 cents)
-      4  2  A5   ( +0 cents):    A5   ( +0 cents)
+      4  3  A5   ( +0 cents):    A5   ( +0 cents)
 
     >>> print_harmonics('A', max_harmonic=4)
     <BLANKLINE>
@@ -615,7 +626,7 @@ def print_harmonics(string, max_harmonic=16, octave=None):
       3  2  E1   ( +2 cents):    E1   ( +2 cents)
     <BLANKLINE>
       4  1  A2   ( +0 cents):    D0   ( -2 cents)
-      4  2  A2   ( +0 cents):    A2   ( +0 cents)
+      4  3  A2   ( +0 cents):    A2   ( +0 cents)
 
     >>> print_harmonics('A', max_harmonic=8, octave=1)
     <BLANKLINE>
@@ -632,7 +643,7 @@ def print_harmonics(string, max_harmonic=16, octave=None):
       7  4  G2   (-31 cents):    C    (-33 cents)
       7  5  G2   (-31 cents):    G    (-31 cents)
     <BLANKLINE>
-      8  3  A3   ( +0 cents):    D    ( -2 cents)
+      8  5  A3   ( +0 cents):    D    ( -2 cents)
 
   """
   _, string_octave = parse_note(string)
@@ -657,7 +668,7 @@ def print_harmonics(string, max_harmonic=16, octave=None):
   for h in range(2,max_harmonic+1):
     hint,hoff = harmonic_interval(h)
     first = True
-    for node,(n,e) in enumerate(note_positions_near_harmonic_number(h), 1):
+    for node,n,e in note_positions_near_harmonic_number(h):
       if octave is not None and floor(n/12) != octave: continue
       note = number_to_note(string_num + n, relative_to=note_rel)
       hnote = number_to_note(string_num + hint, relative_to=hnote_rel)
@@ -774,8 +785,8 @@ def print_harmonics_by_position(string, octaves=(0,), max_harmonic=16):
   string_num = note_to_number(string)
   notes = {h:note_positions_near_harmonic_number(h) for h in range(2,max_harmonic+1)}
   harms = {}
-  for h,ne in notes.items():
-    for n,e in ne:
+  for h,_ne in notes.items():
+    for _,n,e in _ne:
       harms.setdefault(n,[])
       harms[n].append((e,h))
   for eh in harms.values():
@@ -990,7 +1001,7 @@ def lilypond_harmonics(filename, string, octave=0, max_harmonic=16,
 
     first = True
 
-    for n,e in note_positions_near_harmonic_number(h):
+    for _,n,e in note_positions_near_harmonic_number(h):
       if floor((n-1)/12) != octave: continue
       note_num = n + string_num
       note_octave = string_octave
