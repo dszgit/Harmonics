@@ -360,6 +360,20 @@ def number_to_note(n, relative_to='C0', enharmonic=False, lilypond=False):
   octave_symbol = "'" * octave if octave >= 0 else "," * abs(octave)
   return name + acc + octave_symbol
 
+#############################  Utility Functions  ##############################
+
+def instrument_strings(instrument):
+    instr = instrument.lower()
+    if instr == 'violin':
+      return ('E5','A4','D4','G3')
+    elif instr == 'viola':
+      return ('A4','D4','G3','C3')
+    elif instr == 'cello':
+      return ('A3','D3','G2','C2')
+    elif instr == 'bass':
+      return ('G2','D2','A1','E1')
+    else:
+      raise TypeError('unrecognized instrument: {}'.format(instrument))
 
 
 ################################################################################
@@ -518,17 +532,7 @@ def note_positions_near_harmonic_pitch(harmonic_pitch, strings=None, instrument=
   if len([arg for arg in (strings, instrument) if arg is not None]) != 1:
     raise TypeError('exactly one of "strings" or "instrument" must be given')
   if instrument is not None:
-    instr = instrument.lower()
-    if instr == 'violin':
-      strings = ('E5','A4','D4','G3')
-    elif instr == 'viola':
-      strings = ('A4','D4','G3','C3')
-    elif instr == 'cello':
-      strings = ('A3','D3','G2','C2')
-    elif instr == 'bass':
-      strings = ('G2','D2','A1','E1')
-    else:
-      raise TypeError('unrecognized instrument: {}'.format(instrument))
+    strings = instrument_strings(instrument)
   hh = []
   # parse note name and octave
   h_note, h_octave = parse_note(harmonic_pitch)
@@ -812,6 +816,83 @@ def print_harmonics_by_position(string, octaves=(0,), max_harmonic=16):
         hoff = hoff_sgn + str(abs(hoff))
         print('  {:<4} ({:>3} cents):   {:>2}   {:<4} ({:>3} cents)'.format(note,e,h,hnote,hoff))
 
+
+###################################  Output  ###################################
+
+def print_harmonics_for_notes(music, strings=None, instrument=None):
+  """.
+  Print a table of harmonics and their fingered positions for a sequence of notes.
+
+  INPUT:
+
+  - ``music`` -- string; a space-separated sequence of note/octave names in
+    scientific notation
+
+  - ``strings`` -- optional list of string names and octaves in scientific pitch
+    notation.  For example, the 4 strings on a cello are denoted
+    ('A3','D3','G2','C2')
+
+  - ``instrument`` -- name of a stringed instrument
+
+  Exactly one of ``strings`` or ``instrument`` must be given.  If
+  ``instruments`` given, all four strings of the named instrument will be used.
+
+  EFFECT:
+
+  - Prints a table of all possible harmonic data for each note in the sequence.
+    For each note, the harmonic data are sorted in order of distance from the
+    nut of the string.  Each row of the table has the following columns:
+
+    - ``harmonic_note`` -- the pitch of harmonic
+
+    - ``string`` -- number of the string, in Roman numerals, on which the harmonic occurs
+
+    - ``fingered_note`` -- the note name and octave of the fingered note closest
+      to the harmonic node; the octave is relative to the open string, with 0
+      meaning within the first octave
+
+    - ``fingered_offset`` -- number of cents above (if positive) or below (if
+      negative) the fingered note in tempered pitch at which the harmonic node
+      is located
+
+    - ``harm_num`` -- harmonic number (multiple of open string frequence)
+
+    - ``harm_node`` -- node number
+
+
+  EXAMPLES:
+
+    >>> print_harmonics_for_notes('G4 A4 B4', instrument='cello')
+    <BLANKLINE>
+    G4    IV Ef0   16.  6  1
+    G4   III C0    -2.  4  1
+    G4   III G2     0.  4  3
+    G4    IV G2     2.  6  5
+    <BLANKLINE>
+    A4    II A0     2.  3  1
+    A4     I A1     0.  2  1
+    A4    II A1     2.  3  2
+    <BLANKLINE>
+    B4   III B0   -14.  5  1
+    B4   III E0   -16.  5  2
+    B4   III B1   -14.  5  3
+    B4   III B2   -14.  5  4
+
+  """
+  romans = ['I','II','III','IV']
+  if strings is None:
+    if instrument is None:
+      raise TypeError('Either "strings" or "instrument" must be given')
+    strings = instrument_strings(instrument)
+  str_nums = [note_to_number(s) for s in strings]
+  for note in music.split():
+    print('')
+    ss = note_positions_near_harmonic_pitch(note, strings=strings)
+    ss.sort(key=lambda s: (note_to_number(s[1])-str_nums[s[0]], s[0]))
+    for str_ind,fing,fing_off,harm,node,_ in ss:
+      fing_num = note_to_number(fing)
+      fing_rel = number_to_note(fing_num, relative_to=strings[str_ind])
+      print('{:<4} {:>3} {:<4} {:>3}. {:>2} {:>2}'.format(note, romans[str_ind], fing_rel, fing_off, harm, node))
 
 ###################################  Output  ###################################
  
