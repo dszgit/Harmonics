@@ -35,7 +35,8 @@ This module has functions to answer each of those questions, with the
 answer presented in various formats.  See the methods in the "Output"
 section for more explanation.
 
-A word about pitch notation:
+
+A word about pitch notation used in the code:
 
 All pitches refer to chromatic scale positions in **tempered tuning**.
 It is also assumed that when multiple strings are involved, they are
@@ -46,8 +47,8 @@ tuned according to tempered pitch.
 
 - Sharps and flats are denoted by a following "s" or "f" respectively.
 
-- For absolute pitches, the octave indicated using Scientific Pitch
-  Notation: Each octave is numbered, starting on C, with middle C
+- For absolute pitches, the octave is indicated using Scientific Pitch
+  Notation: Each octave is numbered, starting on C, with middle C being
   octave number 4.
 
 For example, "Ef3" denotes the E-flat in the octave below middle C.
