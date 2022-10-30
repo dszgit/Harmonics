@@ -1298,7 +1298,7 @@ def lilypond_harmonics(filename, string, octave=0, max_harmonic=16,
         hh += '  % {0}\n\\bar "|"\n'.format(h)
         hh += ' \\cadenzaOn\n'
         ff += ' \\cadenzaOn\n'
-        hh += '  \\clef "{}"{} {}\\harmonic_\\markup{{"{}"}}^\\markup{{"{}"}}\n'.format(h_clef, h_oct_str, h_note, h_off, h)
+        hh += '  \\clef "{}"{} {}\\harmonic_\\markup{{"{}"}}^\\markup{{ \\raise #3 {{"x{}"}} }}\n'.format(h_clef, h_oct_str, h_note, h_off, h)
         first = False
       else:
         hh = '  \\clef "{}" {}\\harmonic\n'.format(h_clef, h_note)

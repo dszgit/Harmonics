@@ -31,54 +31,54 @@ pitchesAa =
   % 3
 \bar "|"
  \cadenzaOn
-  \clef "treble" \ottava #0 e''\harmonic_\markup{"+2"}^\markup{"3"}
+  \clef "treble" \ottava #0 e''\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x3"} }
   \cadenzaOff
   % 4
 \bar "|"
  \cadenzaOn
-  \clef "treble" a''\harmonic_\markup{"+0"}^\markup{"4"}
+  \clef "treble" a''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x4"} }
   \cadenzaOff
   % 5
 \bar "|"
  \cadenzaOn
-  \clef "treble" cs'''\harmonic_\markup{"-14"}^\markup{"5"}
+  \clef "treble" cs'''\harmonic_\markup{"-14"}^\markup{ \raise #3 {"x5"} }
   \clef "treble" cs'''\harmonic
   \cadenzaOff
   % 6
 \bar "|"
  \cadenzaOn
-  \clef "treble" \ottava #1 e'''\harmonic_\markup{"+2"}^\markup{"6"}
+  \clef "treble" \ottava #1 e'''\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x6"} }
   \cadenzaOff
   % 7
 \bar "|"
  \cadenzaOn
-  \clef "treble" g'''\harmonic_\markup{"-31"}^\markup{"7"}
+  \clef "treble" g'''\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x7"} }
   \clef "treble" g'''\harmonic
   \clef "treble" g'''\harmonic
   \cadenzaOff
   % 8
 \bar "|"
  \cadenzaOn
-  \clef "treble" a'''\harmonic_\markup{"+0"}^\markup{"8"}
+  \clef "treble" a'''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x8"} }
   \clef "treble" a'''\harmonic
   \cadenzaOff
   % 9
 \bar "|"
  \cadenzaOn
-  \clef "treble" b'''\harmonic_\markup{"+4"}^\markup{"9"}
+  \clef "treble" b'''\harmonic_\markup{"+4"}^\markup{ \raise #3 {"x9"} }
   \clef "treble" b'''\harmonic
   \clef "treble" b'''\harmonic
   \cadenzaOff
   % 10
 \bar "|"
  \cadenzaOn
-  \clef "treble" \ottava #2 cs''''\harmonic_\markup{"-14"}^\markup{"10"}
+  \clef "treble" \ottava #2 cs''''\harmonic_\markup{"-14"}^\markup{ \raise #3 {"x10"} }
   \clef "treble" cs''''\harmonic
   \cadenzaOff
   % 11
 \bar "|"
  \cadenzaOn
-  \clef "treble" ef''''\harmonic_\markup{"-49"}^\markup{"11"}
+  \clef "treble" ef''''\harmonic_\markup{"-49"}^\markup{ \raise #3 {"x11"} }
   \clef "treble" ef''''\harmonic
   \clef "treble" ef''''\harmonic
   \clef "treble" ef''''\harmonic
@@ -87,13 +87,13 @@ pitchesAa =
   % 12
 \bar "|"
  \cadenzaOn
-  \clef "treble" e''''\harmonic_\markup{"+2"}^\markup{"12"}
+  \clef "treble" e''''\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x12"} }
   \clef "treble" e''''\harmonic
   \cadenzaOff
   % 13
 \bar "|"
  \cadenzaOn
-  \clef "treble" f''''\harmonic_\markup{"+41"}^\markup{"13"}
+  \clef "treble" f''''\harmonic_\markup{"+41"}^\markup{ \raise #3 {"x13"} }
   \clef "treble" f''''\harmonic
   \clef "treble" f''''\harmonic
   \clef "treble" f''''\harmonic
@@ -103,14 +103,14 @@ pitchesAa =
   % 14
 \bar "|"
  \cadenzaOn
-  \clef "treble" g''''\harmonic_\markup{"-31"}^\markup{"14"}
+  \clef "treble" g''''\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x14"} }
   \clef "treble" g''''\harmonic
   \clef "treble" g''''\harmonic
   \cadenzaOff
   % 15
 \bar "|"
  \cadenzaOn
-  \clef "treble" gs''''\harmonic_\markup{"-12"}^\markup{"15"}
+  \clef "treble" gs''''\harmonic_\markup{"-12"}^\markup{ \raise #3 {"x15"} }
   \clef "treble" gs''''\harmonic
   \clef "treble" gs''''\harmonic
   \clef "treble" gs''''\harmonic
@@ -118,7 +118,7 @@ pitchesAa =
   % 16
 \bar "|"
  \cadenzaOn
-  \clef "treble" a''''\harmonic_\markup{"+0"}^\markup{"16"}
+  \clef "treble" a''''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x16"} }
   \clef "treble" a''''\harmonic
   \clef "treble" a''''\harmonic
   \clef "treble" a''''\harmonic
@@ -256,73 +256,73 @@ pitchesAb =
   % 2
 \bar "|"
  \cadenzaOn
-  \clef "treble" \ottava #0 a'\harmonic_\markup{"+0"}^\markup{"2"}
+  \clef "treble" \ottava #0 a'\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x2"} }
   \cadenzaOff
   % 3
 \bar "|"
  \cadenzaOn
-  \clef "treble" e''\harmonic_\markup{"+2"}^\markup{"3"}
+  \clef "treble" e''\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x3"} }
   \cadenzaOff
   % 5
 \bar "|"
  \cadenzaOn
-  \clef "treble" cs'''\harmonic_\markup{"-14"}^\markup{"5"}
+  \clef "treble" cs'''\harmonic_\markup{"-14"}^\markup{ \raise #3 {"x5"} }
   \cadenzaOff
   % 7
 \bar "|"
  \cadenzaOn
-  \clef "treble" \ottava #1 g'''\harmonic_\markup{"-31"}^\markup{"7"}
+  \clef "treble" \ottava #1 g'''\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x7"} }
   \clef "treble" g'''\harmonic
   \cadenzaOff
   % 8
 \bar "|"
  \cadenzaOn
-  \clef "treble" a'''\harmonic_\markup{"+0"}^\markup{"8"}
+  \clef "treble" a'''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x8"} }
   \cadenzaOff
   % 9
 \bar "|"
  \cadenzaOn
-  \clef "treble" b'''\harmonic_\markup{"+4"}^\markup{"9"}
+  \clef "treble" b'''\harmonic_\markup{"+4"}^\markup{ \raise #3 {"x9"} }
   \cadenzaOff
   % 10
 \bar "|"
  \cadenzaOn
-  \clef "treble" \ottava #2 cs''''\harmonic_\markup{"-14"}^\markup{"10"}
+  \clef "treble" \ottava #2 cs''''\harmonic_\markup{"-14"}^\markup{ \raise #3 {"x10"} }
   \cadenzaOff
   % 11
 \bar "|"
  \cadenzaOn
-  \clef "treble" ef''''\harmonic_\markup{"-49"}^\markup{"11"}
+  \clef "treble" ef''''\harmonic_\markup{"-49"}^\markup{ \raise #3 {"x11"} }
   \clef "treble" ef''''\harmonic
   \clef "treble" ef''''\harmonic
   \cadenzaOff
   % 12
 \bar "|"
  \cadenzaOn
-  \clef "treble" e''''\harmonic_\markup{"+2"}^\markup{"12"}
+  \clef "treble" e''''\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x12"} }
   \cadenzaOff
   % 13
 \bar "|"
  \cadenzaOn
-  \clef "treble" f''''\harmonic_\markup{"+41"}^\markup{"13"}
+  \clef "treble" f''''\harmonic_\markup{"+41"}^\markup{ \raise #3 {"x13"} }
   \clef "treble" f''''\harmonic
   \clef "treble" f''''\harmonic
   \cadenzaOff
   % 14
 \bar "|"
  \cadenzaOn
-  \clef "treble" g''''\harmonic_\markup{"-31"}^\markup{"14"}
+  \clef "treble" g''''\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x14"} }
   \cadenzaOff
   % 15
 \bar "|"
  \cadenzaOn
-  \clef "treble" gs''''\harmonic_\markup{"-12"}^\markup{"15"}
+  \clef "treble" gs''''\harmonic_\markup{"-12"}^\markup{ \raise #3 {"x15"} }
   \clef "treble" gs''''\harmonic
   \cadenzaOff
   % 16
 \bar "|"
  \cadenzaOn
-  \clef "treble" a''''\harmonic_\markup{"+0"}^\markup{"16"}
+  \clef "treble" a''''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x16"} }
   \clef "treble" a''''\harmonic
   \cadenzaOff
   \bar "|."
@@ -436,53 +436,53 @@ pitchesAc =
   % 4
 \bar "|"
  \cadenzaOn
-  \clef "treble" \ottava #0 a''\harmonic_\markup{"+0"}^\markup{"4"}
+  \clef "treble" \ottava #0 a''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x4"} }
   \cadenzaOff
   % 5
 \bar "|"
  \cadenzaOn
-  \clef "treble" cs'''\harmonic_\markup{"-14"}^\markup{"5"}
+  \clef "treble" cs'''\harmonic_\markup{"-14"}^\markup{ \raise #3 {"x5"} }
   \cadenzaOff
   % 6
 \bar "|"
  \cadenzaOn
-  \clef "treble" \ottava #1 e'''\harmonic_\markup{"+2"}^\markup{"6"}
+  \clef "treble" \ottava #1 e'''\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x6"} }
   \cadenzaOff
   % 7
 \bar "|"
  \cadenzaOn
-  \clef "treble" g'''\harmonic_\markup{"-31"}^\markup{"7"}
+  \clef "treble" g'''\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x7"} }
   \cadenzaOff
   % 9
 \bar "|"
  \cadenzaOn
-  \clef "treble" b'''\harmonic_\markup{"+4"}^\markup{"9"}
+  \clef "treble" b'''\harmonic_\markup{"+4"}^\markup{ \raise #3 {"x9"} }
   \cadenzaOff
   % 11
 \bar "|"
  \cadenzaOn
-  \clef "treble" \ottava #2 ef''''\harmonic_\markup{"-49"}^\markup{"11"}
+  \clef "treble" \ottava #2 ef''''\harmonic_\markup{"-49"}^\markup{ \raise #3 {"x11"} }
   \cadenzaOff
   % 13
 \bar "|"
  \cadenzaOn
-  \clef "treble" f''''\harmonic_\markup{"+41"}^\markup{"13"}
+  \clef "treble" f''''\harmonic_\markup{"+41"}^\markup{ \raise #3 {"x13"} }
   \clef "treble" f''''\harmonic
   \cadenzaOff
   % 14
 \bar "|"
  \cadenzaOn
-  \clef "treble" g''''\harmonic_\markup{"-31"}^\markup{"14"}
+  \clef "treble" g''''\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x14"} }
   \cadenzaOff
   % 15
 \bar "|"
  \cadenzaOn
-  \clef "treble" gs''''\harmonic_\markup{"-12"}^\markup{"15"}
+  \clef "treble" gs''''\harmonic_\markup{"-12"}^\markup{ \raise #3 {"x15"} }
   \cadenzaOff
   % 16
 \bar "|"
  \cadenzaOn
-  \clef "treble" a''''\harmonic_\markup{"+0"}^\markup{"16"}
+  \clef "treble" a''''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x16"} }
   \cadenzaOff
   \bar "|."
 }
@@ -585,54 +585,54 @@ pitchesDa =
   % 3
 \bar "|"
  \cadenzaOn
-  \clef "treble" \ottava #0 a'\harmonic_\markup{"+2"}^\markup{"3"}
+  \clef "treble" \ottava #0 a'\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x3"} }
   \cadenzaOff
   % 4
 \bar "|"
  \cadenzaOn
-  \clef "treble" d''\harmonic_\markup{"+0"}^\markup{"4"}
+  \clef "treble" d''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x4"} }
   \cadenzaOff
   % 5
 \bar "|"
  \cadenzaOn
-  \clef "treble" fs''\harmonic_\markup{"-14"}^\markup{"5"}
+  \clef "treble" fs''\harmonic_\markup{"-14"}^\markup{ \raise #3 {"x5"} }
   \clef "treble" fs''\harmonic
   \cadenzaOff
   % 6
 \bar "|"
  \cadenzaOn
-  \clef "treble" a''\harmonic_\markup{"+2"}^\markup{"6"}
+  \clef "treble" a''\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x6"} }
   \cadenzaOff
   % 7
 \bar "|"
  \cadenzaOn
-  \clef "treble" c'''\harmonic_\markup{"-31"}^\markup{"7"}
+  \clef "treble" c'''\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x7"} }
   \clef "treble" c'''\harmonic
   \clef "treble" c'''\harmonic
   \cadenzaOff
   % 8
 \bar "|"
  \cadenzaOn
-  \clef "treble" \ottava #1 d'''\harmonic_\markup{"+0"}^\markup{"8"}
+  \clef "treble" \ottava #1 d'''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x8"} }
   \clef "treble" d'''\harmonic
   \cadenzaOff
   % 9
 \bar "|"
  \cadenzaOn
-  \clef "treble" e'''\harmonic_\markup{"+4"}^\markup{"9"}
+  \clef "treble" e'''\harmonic_\markup{"+4"}^\markup{ \raise #3 {"x9"} }
   \clef "treble" e'''\harmonic
   \clef "treble" e'''\harmonic
   \cadenzaOff
   % 10
 \bar "|"
  \cadenzaOn
-  \clef "treble" fs'''\harmonic_\markup{"-14"}^\markup{"10"}
+  \clef "treble" fs'''\harmonic_\markup{"-14"}^\markup{ \raise #3 {"x10"} }
   \clef "treble" fs'''\harmonic
   \cadenzaOff
   % 11
 \bar "|"
  \cadenzaOn
-  \clef "treble" gs'''\harmonic_\markup{"-49"}^\markup{"11"}
+  \clef "treble" gs'''\harmonic_\markup{"-49"}^\markup{ \raise #3 {"x11"} }
   \clef "treble" gs'''\harmonic
   \clef "treble" gs'''\harmonic
   \clef "treble" gs'''\harmonic
@@ -641,13 +641,13 @@ pitchesDa =
   % 12
 \bar "|"
  \cadenzaOn
-  \clef "treble" a'''\harmonic_\markup{"+2"}^\markup{"12"}
+  \clef "treble" a'''\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x12"} }
   \clef "treble" a'''\harmonic
   \cadenzaOff
   % 13
 \bar "|"
  \cadenzaOn
-  \clef "treble" bf'''\harmonic_\markup{"+41"}^\markup{"13"}
+  \clef "treble" bf'''\harmonic_\markup{"+41"}^\markup{ \raise #3 {"x13"} }
   \clef "treble" bf'''\harmonic
   \clef "treble" bf'''\harmonic
   \clef "treble" bf'''\harmonic
@@ -657,14 +657,14 @@ pitchesDa =
   % 14
 \bar "|"
  \cadenzaOn
-  \clef "treble" \ottava #2 c''''\harmonic_\markup{"-31"}^\markup{"14"}
+  \clef "treble" \ottava #2 c''''\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x14"} }
   \clef "treble" c''''\harmonic
   \clef "treble" c''''\harmonic
   \cadenzaOff
   % 15
 \bar "|"
  \cadenzaOn
-  \clef "treble" cs''''\harmonic_\markup{"-12"}^\markup{"15"}
+  \clef "treble" cs''''\harmonic_\markup{"-12"}^\markup{ \raise #3 {"x15"} }
   \clef "treble" cs''''\harmonic
   \clef "treble" cs''''\harmonic
   \clef "treble" cs''''\harmonic
@@ -672,7 +672,7 @@ pitchesDa =
   % 16
 \bar "|"
  \cadenzaOn
-  \clef "treble" d''''\harmonic_\markup{"+0"}^\markup{"16"}
+  \clef "treble" d''''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x16"} }
   \clef "treble" d''''\harmonic
   \clef "treble" d''''\harmonic
   \clef "treble" d''''\harmonic
@@ -810,73 +810,73 @@ pitchesDb =
   % 2
 \bar "|"
  \cadenzaOn
-  \clef "tenor" \ottava #0 d'\harmonic_\markup{"+0"}^\markup{"2"}
+  \clef "tenor" \ottava #0 d'\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x2"} }
   \cadenzaOff
   % 3
 \bar "|"
  \cadenzaOn
-  \clef "treble" a'\harmonic_\markup{"+2"}^\markup{"3"}
+  \clef "treble" a'\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x3"} }
   \cadenzaOff
   % 5
 \bar "|"
  \cadenzaOn
-  \clef "treble" fs''\harmonic_\markup{"-14"}^\markup{"5"}
+  \clef "treble" fs''\harmonic_\markup{"-14"}^\markup{ \raise #3 {"x5"} }
   \cadenzaOff
   % 7
 \bar "|"
  \cadenzaOn
-  \clef "treble" c'''\harmonic_\markup{"-31"}^\markup{"7"}
+  \clef "treble" c'''\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x7"} }
   \clef "treble" c'''\harmonic
   \cadenzaOff
   % 8
 \bar "|"
  \cadenzaOn
-  \clef "treble" \ottava #1 d'''\harmonic_\markup{"+0"}^\markup{"8"}
+  \clef "treble" \ottava #1 d'''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x8"} }
   \cadenzaOff
   % 9
 \bar "|"
  \cadenzaOn
-  \clef "treble" e'''\harmonic_\markup{"+4"}^\markup{"9"}
+  \clef "treble" e'''\harmonic_\markup{"+4"}^\markup{ \raise #3 {"x9"} }
   \cadenzaOff
   % 10
 \bar "|"
  \cadenzaOn
-  \clef "treble" fs'''\harmonic_\markup{"-14"}^\markup{"10"}
+  \clef "treble" fs'''\harmonic_\markup{"-14"}^\markup{ \raise #3 {"x10"} }
   \cadenzaOff
   % 11
 \bar "|"
  \cadenzaOn
-  \clef "treble" gs'''\harmonic_\markup{"-49"}^\markup{"11"}
+  \clef "treble" gs'''\harmonic_\markup{"-49"}^\markup{ \raise #3 {"x11"} }
   \clef "treble" gs'''\harmonic
   \clef "treble" gs'''\harmonic
   \cadenzaOff
   % 12
 \bar "|"
  \cadenzaOn
-  \clef "treble" a'''\harmonic_\markup{"+2"}^\markup{"12"}
+  \clef "treble" a'''\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x12"} }
   \cadenzaOff
   % 13
 \bar "|"
  \cadenzaOn
-  \clef "treble" bf'''\harmonic_\markup{"+41"}^\markup{"13"}
+  \clef "treble" bf'''\harmonic_\markup{"+41"}^\markup{ \raise #3 {"x13"} }
   \clef "treble" bf'''\harmonic
   \clef "treble" bf'''\harmonic
   \cadenzaOff
   % 14
 \bar "|"
  \cadenzaOn
-  \clef "treble" \ottava #2 c''''\harmonic_\markup{"-31"}^\markup{"14"}
+  \clef "treble" \ottava #2 c''''\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x14"} }
   \cadenzaOff
   % 15
 \bar "|"
  \cadenzaOn
-  \clef "treble" cs''''\harmonic_\markup{"-12"}^\markup{"15"}
+  \clef "treble" cs''''\harmonic_\markup{"-12"}^\markup{ \raise #3 {"x15"} }
   \clef "treble" cs''''\harmonic
   \cadenzaOff
   % 16
 \bar "|"
  \cadenzaOn
-  \clef "treble" d''''\harmonic_\markup{"+0"}^\markup{"16"}
+  \clef "treble" d''''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x16"} }
   \clef "treble" d''''\harmonic
   \cadenzaOff
   \bar "|."
@@ -990,53 +990,53 @@ pitchesDc =
   % 4
 \bar "|"
  \cadenzaOn
-  \clef "treble" \ottava #0 d''\harmonic_\markup{"+0"}^\markup{"4"}
+  \clef "treble" \ottava #0 d''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x4"} }
   \cadenzaOff
   % 5
 \bar "|"
  \cadenzaOn
-  \clef "treble" fs''\harmonic_\markup{"-14"}^\markup{"5"}
+  \clef "treble" fs''\harmonic_\markup{"-14"}^\markup{ \raise #3 {"x5"} }
   \cadenzaOff
   % 6
 \bar "|"
  \cadenzaOn
-  \clef "treble" a''\harmonic_\markup{"+2"}^\markup{"6"}
+  \clef "treble" a''\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x6"} }
   \cadenzaOff
   % 7
 \bar "|"
  \cadenzaOn
-  \clef "treble" c'''\harmonic_\markup{"-31"}^\markup{"7"}
+  \clef "treble" c'''\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x7"} }
   \cadenzaOff
   % 9
 \bar "|"
  \cadenzaOn
-  \clef "treble" \ottava #1 e'''\harmonic_\markup{"+4"}^\markup{"9"}
+  \clef "treble" \ottava #1 e'''\harmonic_\markup{"+4"}^\markup{ \raise #3 {"x9"} }
   \cadenzaOff
   % 11
 \bar "|"
  \cadenzaOn
-  \clef "treble" gs'''\harmonic_\markup{"-49"}^\markup{"11"}
+  \clef "treble" gs'''\harmonic_\markup{"-49"}^\markup{ \raise #3 {"x11"} }
   \cadenzaOff
   % 13
 \bar "|"
  \cadenzaOn
-  \clef "treble" bf'''\harmonic_\markup{"+41"}^\markup{"13"}
+  \clef "treble" bf'''\harmonic_\markup{"+41"}^\markup{ \raise #3 {"x13"} }
   \clef "treble" bf'''\harmonic
   \cadenzaOff
   % 14
 \bar "|"
  \cadenzaOn
-  \clef "treble" \ottava #2 c''''\harmonic_\markup{"-31"}^\markup{"14"}
+  \clef "treble" \ottava #2 c''''\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x14"} }
   \cadenzaOff
   % 15
 \bar "|"
  \cadenzaOn
-  \clef "treble" cs''''\harmonic_\markup{"-12"}^\markup{"15"}
+  \clef "treble" cs''''\harmonic_\markup{"-12"}^\markup{ \raise #3 {"x15"} }
   \cadenzaOff
   % 16
 \bar "|"
  \cadenzaOn
-  \clef "treble" d''''\harmonic_\markup{"+0"}^\markup{"16"}
+  \clef "treble" d''''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x16"} }
   \cadenzaOff
   \bar "|."
 }
@@ -1139,54 +1139,54 @@ pitchesGa =
   % 3
 \bar "|"
  \cadenzaOn
-  \clef "tenor" \ottava #0 d'\harmonic_\markup{"+2"}^\markup{"3"}
+  \clef "tenor" \ottava #0 d'\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x3"} }
   \cadenzaOff
   % 4
 \bar "|"
  \cadenzaOn
-  \clef "tenor" g'\harmonic_\markup{"+0"}^\markup{"4"}
+  \clef "tenor" g'\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x4"} }
   \cadenzaOff
   % 5
 \bar "|"
  \cadenzaOn
-  \clef "treble" b'\harmonic_\markup{"-14"}^\markup{"5"}
+  \clef "treble" b'\harmonic_\markup{"-14"}^\markup{ \raise #3 {"x5"} }
   \clef "treble" b'\harmonic
   \cadenzaOff
   % 6
 \bar "|"
  \cadenzaOn
-  \clef "treble" d''\harmonic_\markup{"+2"}^\markup{"6"}
+  \clef "treble" d''\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x6"} }
   \cadenzaOff
   % 7
 \bar "|"
  \cadenzaOn
-  \clef "treble" f''\harmonic_\markup{"-31"}^\markup{"7"}
+  \clef "treble" f''\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x7"} }
   \clef "treble" f''\harmonic
   \clef "treble" f''\harmonic
   \cadenzaOff
   % 8
 \bar "|"
  \cadenzaOn
-  \clef "treble" g''\harmonic_\markup{"+0"}^\markup{"8"}
+  \clef "treble" g''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x8"} }
   \clef "treble" g''\harmonic
   \cadenzaOff
   % 9
 \bar "|"
  \cadenzaOn
-  \clef "treble" a''\harmonic_\markup{"+4"}^\markup{"9"}
+  \clef "treble" a''\harmonic_\markup{"+4"}^\markup{ \raise #3 {"x9"} }
   \clef "treble" a''\harmonic
   \clef "treble" a''\harmonic
   \cadenzaOff
   % 10
 \bar "|"
  \cadenzaOn
-  \clef "treble" b''\harmonic_\markup{"-14"}^\markup{"10"}
+  \clef "treble" b''\harmonic_\markup{"-14"}^\markup{ \raise #3 {"x10"} }
   \clef "treble" b''\harmonic
   \cadenzaOff
   % 11
 \bar "|"
  \cadenzaOn
-  \clef "treble" cs'''\harmonic_\markup{"-49"}^\markup{"11"}
+  \clef "treble" cs'''\harmonic_\markup{"-49"}^\markup{ \raise #3 {"x11"} }
   \clef "treble" cs'''\harmonic
   \clef "treble" cs'''\harmonic
   \clef "treble" cs'''\harmonic
@@ -1195,13 +1195,13 @@ pitchesGa =
   % 12
 \bar "|"
  \cadenzaOn
-  \clef "treble" \ottava #1 d'''\harmonic_\markup{"+2"}^\markup{"12"}
+  \clef "treble" \ottava #1 d'''\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x12"} }
   \clef "treble" d'''\harmonic
   \cadenzaOff
   % 13
 \bar "|"
  \cadenzaOn
-  \clef "treble" ef'''\harmonic_\markup{"+41"}^\markup{"13"}
+  \clef "treble" ef'''\harmonic_\markup{"+41"}^\markup{ \raise #3 {"x13"} }
   \clef "treble" ef'''\harmonic
   \clef "treble" ef'''\harmonic
   \clef "treble" ef'''\harmonic
@@ -1211,14 +1211,14 @@ pitchesGa =
   % 14
 \bar "|"
  \cadenzaOn
-  \clef "treble" f'''\harmonic_\markup{"-31"}^\markup{"14"}
+  \clef "treble" f'''\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x14"} }
   \clef "treble" f'''\harmonic
   \clef "treble" f'''\harmonic
   \cadenzaOff
   % 15
 \bar "|"
  \cadenzaOn
-  \clef "treble" fs'''\harmonic_\markup{"-12"}^\markup{"15"}
+  \clef "treble" fs'''\harmonic_\markup{"-12"}^\markup{ \raise #3 {"x15"} }
   \clef "treble" fs'''\harmonic
   \clef "treble" fs'''\harmonic
   \clef "treble" fs'''\harmonic
@@ -1226,7 +1226,7 @@ pitchesGa =
   % 16
 \bar "|"
  \cadenzaOn
-  \clef "treble" g'''\harmonic_\markup{"+0"}^\markup{"16"}
+  \clef "treble" g'''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x16"} }
   \clef "treble" g'''\harmonic
   \clef "treble" g'''\harmonic
   \clef "treble" g'''\harmonic
@@ -1364,73 +1364,73 @@ pitchesGb =
   % 2
 \bar "|"
  \cadenzaOn
-  \clef "bass" \ottava #0 g\harmonic_\markup{"+0"}^\markup{"2"}
+  \clef "bass" \ottava #0 g\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x2"} }
   \cadenzaOff
   % 3
 \bar "|"
  \cadenzaOn
-  \clef "tenor" d'\harmonic_\markup{"+2"}^\markup{"3"}
+  \clef "tenor" d'\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x3"} }
   \cadenzaOff
   % 5
 \bar "|"
  \cadenzaOn
-  \clef "treble" b'\harmonic_\markup{"-14"}^\markup{"5"}
+  \clef "treble" b'\harmonic_\markup{"-14"}^\markup{ \raise #3 {"x5"} }
   \cadenzaOff
   % 7
 \bar "|"
  \cadenzaOn
-  \clef "treble" f''\harmonic_\markup{"-31"}^\markup{"7"}
+  \clef "treble" f''\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x7"} }
   \clef "treble" f''\harmonic
   \cadenzaOff
   % 8
 \bar "|"
  \cadenzaOn
-  \clef "treble" g''\harmonic_\markup{"+0"}^\markup{"8"}
+  \clef "treble" g''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x8"} }
   \cadenzaOff
   % 9
 \bar "|"
  \cadenzaOn
-  \clef "treble" a''\harmonic_\markup{"+4"}^\markup{"9"}
+  \clef "treble" a''\harmonic_\markup{"+4"}^\markup{ \raise #3 {"x9"} }
   \cadenzaOff
   % 10
 \bar "|"
  \cadenzaOn
-  \clef "treble" b''\harmonic_\markup{"-14"}^\markup{"10"}
+  \clef "treble" b''\harmonic_\markup{"-14"}^\markup{ \raise #3 {"x10"} }
   \cadenzaOff
   % 11
 \bar "|"
  \cadenzaOn
-  \clef "treble" cs'''\harmonic_\markup{"-49"}^\markup{"11"}
+  \clef "treble" cs'''\harmonic_\markup{"-49"}^\markup{ \raise #3 {"x11"} }
   \clef "treble" cs'''\harmonic
   \clef "treble" cs'''\harmonic
   \cadenzaOff
   % 12
 \bar "|"
  \cadenzaOn
-  \clef "treble" \ottava #1 d'''\harmonic_\markup{"+2"}^\markup{"12"}
+  \clef "treble" \ottava #1 d'''\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x12"} }
   \cadenzaOff
   % 13
 \bar "|"
  \cadenzaOn
-  \clef "treble" ef'''\harmonic_\markup{"+41"}^\markup{"13"}
+  \clef "treble" ef'''\harmonic_\markup{"+41"}^\markup{ \raise #3 {"x13"} }
   \clef "treble" ef'''\harmonic
   \clef "treble" ef'''\harmonic
   \cadenzaOff
   % 14
 \bar "|"
  \cadenzaOn
-  \clef "treble" f'''\harmonic_\markup{"-31"}^\markup{"14"}
+  \clef "treble" f'''\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x14"} }
   \cadenzaOff
   % 15
 \bar "|"
  \cadenzaOn
-  \clef "treble" fs'''\harmonic_\markup{"-12"}^\markup{"15"}
+  \clef "treble" fs'''\harmonic_\markup{"-12"}^\markup{ \raise #3 {"x15"} }
   \clef "treble" fs'''\harmonic
   \cadenzaOff
   % 16
 \bar "|"
  \cadenzaOn
-  \clef "treble" g'''\harmonic_\markup{"+0"}^\markup{"16"}
+  \clef "treble" g'''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x16"} }
   \clef "treble" g'''\harmonic
   \cadenzaOff
   \bar "|."
@@ -1544,53 +1544,53 @@ pitchesGc =
   % 4
 \bar "|"
  \cadenzaOn
-  \clef "tenor" \ottava #0 g'\harmonic_\markup{"+0"}^\markup{"4"}
+  \clef "tenor" \ottava #0 g'\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x4"} }
   \cadenzaOff
   % 5
 \bar "|"
  \cadenzaOn
-  \clef "treble" b'\harmonic_\markup{"-14"}^\markup{"5"}
+  \clef "treble" b'\harmonic_\markup{"-14"}^\markup{ \raise #3 {"x5"} }
   \cadenzaOff
   % 6
 \bar "|"
  \cadenzaOn
-  \clef "treble" d''\harmonic_\markup{"+2"}^\markup{"6"}
+  \clef "treble" d''\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x6"} }
   \cadenzaOff
   % 7
 \bar "|"
  \cadenzaOn
-  \clef "treble" f''\harmonic_\markup{"-31"}^\markup{"7"}
+  \clef "treble" f''\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x7"} }
   \cadenzaOff
   % 9
 \bar "|"
  \cadenzaOn
-  \clef "treble" a''\harmonic_\markup{"+4"}^\markup{"9"}
+  \clef "treble" a''\harmonic_\markup{"+4"}^\markup{ \raise #3 {"x9"} }
   \cadenzaOff
   % 11
 \bar "|"
  \cadenzaOn
-  \clef "treble" cs'''\harmonic_\markup{"-49"}^\markup{"11"}
+  \clef "treble" cs'''\harmonic_\markup{"-49"}^\markup{ \raise #3 {"x11"} }
   \cadenzaOff
   % 13
 \bar "|"
  \cadenzaOn
-  \clef "treble" \ottava #1 ef'''\harmonic_\markup{"+41"}^\markup{"13"}
+  \clef "treble" \ottava #1 ef'''\harmonic_\markup{"+41"}^\markup{ \raise #3 {"x13"} }
   \clef "treble" ef'''\harmonic
   \cadenzaOff
   % 14
 \bar "|"
  \cadenzaOn
-  \clef "treble" f'''\harmonic_\markup{"-31"}^\markup{"14"}
+  \clef "treble" f'''\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x14"} }
   \cadenzaOff
   % 15
 \bar "|"
  \cadenzaOn
-  \clef "treble" fs'''\harmonic_\markup{"-12"}^\markup{"15"}
+  \clef "treble" fs'''\harmonic_\markup{"-12"}^\markup{ \raise #3 {"x15"} }
   \cadenzaOff
   % 16
 \bar "|"
  \cadenzaOn
-  \clef "treble" g'''\harmonic_\markup{"+0"}^\markup{"16"}
+  \clef "treble" g'''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x16"} }
   \cadenzaOff
   \bar "|."
 }
@@ -1693,54 +1693,54 @@ pitchesCa =
   % 3
 \bar "|"
  \cadenzaOn
-  \clef "bass" \ottava #0 g\harmonic_\markup{"+2"}^\markup{"3"}
+  \clef "bass" \ottava #0 g\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x3"} }
   \cadenzaOff
   % 4
 \bar "|"
  \cadenzaOn
-  \clef "bass" c'\harmonic_\markup{"+0"}^\markup{"4"}
+  \clef "bass" c'\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x4"} }
   \cadenzaOff
   % 5
 \bar "|"
  \cadenzaOn
-  \clef "tenor" e'\harmonic_\markup{"-14"}^\markup{"5"}
+  \clef "tenor" e'\harmonic_\markup{"-14"}^\markup{ \raise #3 {"x5"} }
   \clef "tenor" e'\harmonic
   \cadenzaOff
   % 6
 \bar "|"
  \cadenzaOn
-  \clef "tenor" g'\harmonic_\markup{"+2"}^\markup{"6"}
+  \clef "tenor" g'\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x6"} }
   \cadenzaOff
   % 7
 \bar "|"
  \cadenzaOn
-  \clef "treble" bf'\harmonic_\markup{"-31"}^\markup{"7"}
+  \clef "treble" bf'\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x7"} }
   \clef "treble" bf'\harmonic
   \clef "treble" bf'\harmonic
   \cadenzaOff
   % 8
 \bar "|"
  \cadenzaOn
-  \clef "treble" c''\harmonic_\markup{"+0"}^\markup{"8"}
+  \clef "treble" c''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x8"} }
   \clef "treble" c''\harmonic
   \cadenzaOff
   % 9
 \bar "|"
  \cadenzaOn
-  \clef "treble" d''\harmonic_\markup{"+4"}^\markup{"9"}
+  \clef "treble" d''\harmonic_\markup{"+4"}^\markup{ \raise #3 {"x9"} }
   \clef "treble" d''\harmonic
   \clef "treble" d''\harmonic
   \cadenzaOff
   % 10
 \bar "|"
  \cadenzaOn
-  \clef "treble" e''\harmonic_\markup{"-14"}^\markup{"10"}
+  \clef "treble" e''\harmonic_\markup{"-14"}^\markup{ \raise #3 {"x10"} }
   \clef "treble" e''\harmonic
   \cadenzaOff
   % 11
 \bar "|"
  \cadenzaOn
-  \clef "treble" fs''\harmonic_\markup{"-49"}^\markup{"11"}
+  \clef "treble" fs''\harmonic_\markup{"-49"}^\markup{ \raise #3 {"x11"} }
   \clef "treble" fs''\harmonic
   \clef "treble" fs''\harmonic
   \clef "treble" fs''\harmonic
@@ -1749,13 +1749,13 @@ pitchesCa =
   % 12
 \bar "|"
  \cadenzaOn
-  \clef "treble" g''\harmonic_\markup{"+2"}^\markup{"12"}
+  \clef "treble" g''\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x12"} }
   \clef "treble" g''\harmonic
   \cadenzaOff
   % 13
 \bar "|"
  \cadenzaOn
-  \clef "treble" gs''\harmonic_\markup{"+41"}^\markup{"13"}
+  \clef "treble" gs''\harmonic_\markup{"+41"}^\markup{ \raise #3 {"x13"} }
   \clef "treble" gs''\harmonic
   \clef "treble" gs''\harmonic
   \clef "treble" gs''\harmonic
@@ -1765,14 +1765,14 @@ pitchesCa =
   % 14
 \bar "|"
  \cadenzaOn
-  \clef "treble" bf''\harmonic_\markup{"-31"}^\markup{"14"}
+  \clef "treble" bf''\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x14"} }
   \clef "treble" bf''\harmonic
   \clef "treble" bf''\harmonic
   \cadenzaOff
   % 15
 \bar "|"
  \cadenzaOn
-  \clef "treble" b''\harmonic_\markup{"-12"}^\markup{"15"}
+  \clef "treble" b''\harmonic_\markup{"-12"}^\markup{ \raise #3 {"x15"} }
   \clef "treble" b''\harmonic
   \clef "treble" b''\harmonic
   \clef "treble" b''\harmonic
@@ -1780,7 +1780,7 @@ pitchesCa =
   % 16
 \bar "|"
  \cadenzaOn
-  \clef "treble" c'''\harmonic_\markup{"+0"}^\markup{"16"}
+  \clef "treble" c'''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x16"} }
   \clef "treble" c'''\harmonic
   \clef "treble" c'''\harmonic
   \clef "treble" c'''\harmonic
@@ -1918,73 +1918,73 @@ pitchesCb =
   % 2
 \bar "|"
  \cadenzaOn
-  \clef "bass" \ottava #0 c\harmonic_\markup{"+0"}^\markup{"2"}
+  \clef "bass" \ottava #0 c\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x2"} }
   \cadenzaOff
   % 3
 \bar "|"
  \cadenzaOn
-  \clef "bass" g\harmonic_\markup{"+2"}^\markup{"3"}
+  \clef "bass" g\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x3"} }
   \cadenzaOff
   % 5
 \bar "|"
  \cadenzaOn
-  \clef "tenor" e'\harmonic_\markup{"-14"}^\markup{"5"}
+  \clef "tenor" e'\harmonic_\markup{"-14"}^\markup{ \raise #3 {"x5"} }
   \cadenzaOff
   % 7
 \bar "|"
  \cadenzaOn
-  \clef "treble" bf'\harmonic_\markup{"-31"}^\markup{"7"}
+  \clef "treble" bf'\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x7"} }
   \clef "treble" bf'\harmonic
   \cadenzaOff
   % 8
 \bar "|"
  \cadenzaOn
-  \clef "treble" c''\harmonic_\markup{"+0"}^\markup{"8"}
+  \clef "treble" c''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x8"} }
   \cadenzaOff
   % 9
 \bar "|"
  \cadenzaOn
-  \clef "treble" d''\harmonic_\markup{"+4"}^\markup{"9"}
+  \clef "treble" d''\harmonic_\markup{"+4"}^\markup{ \raise #3 {"x9"} }
   \cadenzaOff
   % 10
 \bar "|"
  \cadenzaOn
-  \clef "treble" e''\harmonic_\markup{"-14"}^\markup{"10"}
+  \clef "treble" e''\harmonic_\markup{"-14"}^\markup{ \raise #3 {"x10"} }
   \cadenzaOff
   % 11
 \bar "|"
  \cadenzaOn
-  \clef "treble" fs''\harmonic_\markup{"-49"}^\markup{"11"}
+  \clef "treble" fs''\harmonic_\markup{"-49"}^\markup{ \raise #3 {"x11"} }
   \clef "treble" fs''\harmonic
   \clef "treble" fs''\harmonic
   \cadenzaOff
   % 12
 \bar "|"
  \cadenzaOn
-  \clef "treble" g''\harmonic_\markup{"+2"}^\markup{"12"}
+  \clef "treble" g''\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x12"} }
   \cadenzaOff
   % 13
 \bar "|"
  \cadenzaOn
-  \clef "treble" gs''\harmonic_\markup{"+41"}^\markup{"13"}
+  \clef "treble" gs''\harmonic_\markup{"+41"}^\markup{ \raise #3 {"x13"} }
   \clef "treble" gs''\harmonic
   \clef "treble" gs''\harmonic
   \cadenzaOff
   % 14
 \bar "|"
  \cadenzaOn
-  \clef "treble" bf''\harmonic_\markup{"-31"}^\markup{"14"}
+  \clef "treble" bf''\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x14"} }
   \cadenzaOff
   % 15
 \bar "|"
  \cadenzaOn
-  \clef "treble" b''\harmonic_\markup{"-12"}^\markup{"15"}
+  \clef "treble" b''\harmonic_\markup{"-12"}^\markup{ \raise #3 {"x15"} }
   \clef "treble" b''\harmonic
   \cadenzaOff
   % 16
 \bar "|"
  \cadenzaOn
-  \clef "treble" c'''\harmonic_\markup{"+0"}^\markup{"16"}
+  \clef "treble" c'''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x16"} }
   \clef "treble" c'''\harmonic
   \cadenzaOff
   \bar "|."
@@ -2098,53 +2098,53 @@ pitchesCc =
   % 4
 \bar "|"
  \cadenzaOn
-  \clef "bass" \ottava #0 c'\harmonic_\markup{"+0"}^\markup{"4"}
+  \clef "bass" \ottava #0 c'\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x4"} }
   \cadenzaOff
   % 5
 \bar "|"
  \cadenzaOn
-  \clef "tenor" e'\harmonic_\markup{"-14"}^\markup{"5"}
+  \clef "tenor" e'\harmonic_\markup{"-14"}^\markup{ \raise #3 {"x5"} }
   \cadenzaOff
   % 6
 \bar "|"
  \cadenzaOn
-  \clef "tenor" g'\harmonic_\markup{"+2"}^\markup{"6"}
+  \clef "tenor" g'\harmonic_\markup{"+2"}^\markup{ \raise #3 {"x6"} }
   \cadenzaOff
   % 7
 \bar "|"
  \cadenzaOn
-  \clef "treble" bf'\harmonic_\markup{"-31"}^\markup{"7"}
+  \clef "treble" bf'\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x7"} }
   \cadenzaOff
   % 9
 \bar "|"
  \cadenzaOn
-  \clef "treble" d''\harmonic_\markup{"+4"}^\markup{"9"}
+  \clef "treble" d''\harmonic_\markup{"+4"}^\markup{ \raise #3 {"x9"} }
   \cadenzaOff
   % 11
 \bar "|"
  \cadenzaOn
-  \clef "treble" fs''\harmonic_\markup{"-49"}^\markup{"11"}
+  \clef "treble" fs''\harmonic_\markup{"-49"}^\markup{ \raise #3 {"x11"} }
   \cadenzaOff
   % 13
 \bar "|"
  \cadenzaOn
-  \clef "treble" gs''\harmonic_\markup{"+41"}^\markup{"13"}
+  \clef "treble" gs''\harmonic_\markup{"+41"}^\markup{ \raise #3 {"x13"} }
   \clef "treble" gs''\harmonic
   \cadenzaOff
   % 14
 \bar "|"
  \cadenzaOn
-  \clef "treble" bf''\harmonic_\markup{"-31"}^\markup{"14"}
+  \clef "treble" bf''\harmonic_\markup{"-31"}^\markup{ \raise #3 {"x14"} }
   \cadenzaOff
   % 15
 \bar "|"
  \cadenzaOn
-  \clef "treble" b''\harmonic_\markup{"-12"}^\markup{"15"}
+  \clef "treble" b''\harmonic_\markup{"-12"}^\markup{ \raise #3 {"x15"} }
   \cadenzaOff
   % 16
 \bar "|"
  \cadenzaOn
-  \clef "treble" c'''\harmonic_\markup{"+0"}^\markup{"16"}
+  \clef "treble" c'''\harmonic_\markup{"+0"}^\markup{ \raise #3 {"x16"} }
   \cadenzaOff
   \bar "|."
 }
