@@ -5,12 +5,12 @@ Module for analyzing positions of natural harmonics on a stringed
 instrument relative to positions of fingered notes.
 
 
-** AUTHOR:
+## AUTHOR:
 
 - David Zelinsky <dsz@dedekind.net>
 
 
-** DISCUSSION:
+## DISCUSSION:
 
 A string has multiple modes of vibration.  The most common is the
 fundamental, or open string.  But for each positive integer N there is
@@ -59,7 +59,7 @@ denoted by a number of punctuation marks (single quotes or commas),
 with an unadorned "c" representing C3.
 
 
-** TABLE OF CONTENTS:
+## TABLE OF CONTENTS:
 
 ### Global Data
 

@@ -1,14 +1,14 @@
-# harmonics.py
+# String Harmonics
 
-Module for analyzing positions of natural harmonics on a string,
-relative to positions of fingered notes.
+Module for analyzing positions of natural harmonics on a stringed
+instrument relative to positions of fingered notes.
 
-AUTHOR:
+## AUTHOR:
 
 - David Zelinsky <dsz@dedekind.net>
 
 
-COPYRIGHT NOTICE:
+## COPYRIGHT NOTICE:
 
     This program is free software: you can redistribute it and/or
     modify it under the terms of the GNU General Public License as
@@ -24,7 +24,7 @@ COPYRIGHT NOTICE:
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-DISCUSSION:
+## DISCUSSION:
 
 A string has multiple modes of vibration.  The most common is the
 fundamental, or open string.  But for each positive integer N there is
@@ -75,7 +75,7 @@ with an unadorned "c" representing C3.
 
 
 
-TABLE OF CONTENTS:
+## TABLE OF CONTENTS:
 
 - harmonics.py
 
@@ -83,18 +83,41 @@ TABLE OF CONTENTS:
 
   - Utility Functions
 
-    - note_number
-    - note_name
-    - ordinal_string
+    - signed
+    - ordinal
+    - parse_note
+    - note_with_accidental
+    - note_to_number
+    - number_to_interval
+    - number_to_note
+    - relative_octave
+    - instrument_strings
+    - note_in_staff
 
   - Computation
 
-    - note_positions_near_harmonic
     - harmonic_interval
+    - note_positions_near_harmonic_number
+    - notes_near_harmonic_on_string
+    - note_positions_near_harmonic_pitch
 
   - Output
 
     - print_harmonics
     - print_harmonics_by_position
+    - print_harmonics_for_notes
     - lilypond_harmonics
-    - lilypond_cello_strings
+    - lilypond_cello_harmonics
+
+- intro.ly
+
+  - introductory front-matter for lilypond_cello_harmonics
+
+- cello-harmonics.ly
+
+  - lilypond source file produced with lilypond_cello_harmonics
+
+- cello-harmonics.pdf
+
+  - typeset catalog of cello harmonics
+
