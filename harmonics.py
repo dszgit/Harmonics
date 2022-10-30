@@ -63,26 +63,34 @@ with an unadorned "c" representing C3.
 
 ### Global Data
 
+
 ### Utility Functions
 
+  - signed
   - ordinal
   - parse_note
+  - note_with_accidental
   - note_to_number
+  - number_to_interval
   - number_to_note
+  - relative_octave
+  - instrument_strings
+  - note_in_staff
 
 ### Computation
 
-  - note_positions_near_harmonic_number
-  - note_positions_near_harmonic_pitch
   - harmonic_interval
+  - note_positions_near_harmonic_number
+  - notes_near_harmonic_on_string
+  - note_positions_near_harmonic_pitch
 
 ### Output
 
   - print_harmonics
   - print_harmonics_by_position
+  - print_harmonics_for_notes
   - lilypond_harmonics
   - lilypond_cello_strings
-
 
 ## COPYRIGHT NOTICE
 
@@ -103,6 +111,8 @@ with an unadorned "c" representing C3.
 
 from math import log, gcd, floor
 import re
+import os
+
 
 ################################################################################
 ################################  Global Data  #################################
@@ -117,6 +127,11 @@ sharp_symbol = 's'
 ################################################################################
 #############################  Utility Functions  ##############################
 ################################################################################
+
+def signed(n):
+  return str(n) if n<0 else '+{}'.format(n)
+
+#############################  Utility Functions  ##############################
 
 def ordinal(n):
   """
@@ -155,19 +170,25 @@ def ordinal(n):
 #############################  Utility Functions  ##############################
 
 
-def parse_note(note):
-  """
+def parse_note(note, extract_accidental=False):
+  r""".
   Return the note name and octave number
 
   INPUT:
 
   - ``note`` -- string; a note name, optionally including an octave number
 
+  - ``extract_accidental`` -- boolean (default: False); whether separate the accidental from the note name
+
   OUTPUT:
 
-  - name,octave:
+  - pair ``(name,octave)``, or triple ``(name,accidental,octave)`` if ``extract_accidental=True``, where:
   
-    - ``name`` -- the non-numeric part of ``note``
+    - ``name`` -- the non-numeric part of ``note``, or just the first character if ``extract_accidental=True``
+
+    - ``accidental`` -- (present only if ``extract_accidental=True) the
+      non-numeric part of ``note`` following the first character, or None if
+      there is none
 
     - ``octave`` -- the numeric part of ``note``, or None if no octave number is present
 
@@ -177,16 +198,76 @@ def parse_note(note):
     ('A', None)
     >>> parse_note('A3')
     ('A', 3)
+    >>> parse_note('Af')
+    ('Af', None)
+    >>> parse_note('A', extract_accidental=True)
+    ('A', None, None)
+    >>> parse_note('Af', extract_accidental=True)
+    ('A', 'f', None)
+    >>> parse_note('A3', extract_accidental=True)
+    ('A', None, 3)
+    >>> parse_note('Af3', extract_accidental=True)
+    ('A', 'f', 3)
 
   """
   m = re.search('[0-9]',note)
   if m is None:
-    return note, None
-  i = m.start()
-  name = note[:i]
-  octave = int(note[i:])
-  return name, octave
+    name = note
+    octave = None
+  else:
+    i = m.start()
+    name = note[:i]
+    octave = int(note[i:])
+  if not extract_accidental:
+    return (name, octave)
+  acc = name[1:]
+  if acc == '': acc = None
+  name = name[0]
+  return (name, acc, octave)
+  
 
+#############################  Utility Functions  ##############################
+
+def note_with_accidental(note):
+  r""".
+  Return the note-name and the accidental as a tuple
+
+  INPUT:
+
+  - ``note`` -- a note name, optionally including an octave number
+
+  OUTPUT:
+
+  - tuple ``(name, acc)`` where
+
+    - ``name`` is the letter name of the note
+
+    - ``acc`` is the accidental, which is either a string or None. The string is
+      usually either "f" or "s", but it is really just the non-numeric part of
+      ``note`` following the single initial letter.  If the non-numeric part of
+      ``note`` is a single letter, then ``acc`` will be None.
+
+
+  EXAMPLES:
+
+    >> note_with_accidental("Af3")
+    ("A", "f")
+
+    >> note_with_accidental("As3")
+    ("A", "s")
+
+    >> note_with_accidental("A3")
+    ("A", None)
+  """
+  s, _ = parse_note(note)
+  name = s[0]
+  if len(s) > 1:
+    acc = s[1:]
+  else:
+    acc = None
+  return (name, acc)
+
+#############################  Utility Functions  ##############################
 
 def note_to_number(note, lilypond=False):
   """
@@ -258,7 +339,60 @@ def note_to_number(note, lilypond=False):
 
 #############################  Utility Functions  ##############################
 
-def number_to_note(n, relative_to='C0', enharmonic=False, lilypond=False):
+def number_to_interval(n):
+  r""".
+  Return the musical interval corresponding to ``n`` half steps.
+
+  INPUT:
+
+  - ``n`` -- postive integer; the number of half steps
+
+  OUTPUT:
+
+  - string of the form "tN" or "tN+m", or just "+m", where
+
+    - ``t`` is the type of interval:
+
+      - "M" -- major
+
+      - "m" -- minor
+
+      - "P" -- perfect  (4th or 5th)
+
+      - "d" -- diminished
+
+    - ``N`` is the interval number
+
+    - ``m`` is the number of full octaves
+
+  EXAMPLES:
+
+    >>> number_to_interval(3)
+    'm3'
+    >>> number_to_interval(4)
+    'M3'
+    >>> number_to_interval(5)
+    'P4'
+    >>> number_to_interval(6)
+    'd5'
+    >>> number_to_interval(16)
+    'M3+1'
+    >>> number_to_interval(36)
+    '+3'
+  """
+  n,m = n%12, n//12
+  intvls = {0:"", 1:'m2', 2:'M2', 3:'m3', 4:'M3', 5:'P4',
+            6:'d5', 7:'P5', 8:'m6', 9:'M6', 10:'m7', 11:'M7'}
+  s = intvls[n]
+  if m > 0:
+    s += "+{}".format(m)
+  return s
+
+
+#############################  Utility Functions  ##############################
+
+
+def number_to_note(n, relative_to=0, no_octave=False, enharmonic=False, lilypond=False):
   """.
 
   Return the name of note with scale degree ``n`` in chromatic scale based on C
@@ -267,10 +401,14 @@ def number_to_note(n, relative_to='C0', enharmonic=False, lilypond=False):
 
   - ``n`` -- integer
 
-  - ``relative_to`` -- string or integer or None (default: 0); absolute note
-    number, or name in scientific notation; return note name with number of full
-    octaves above this note.  The default value of 0 corresponds to absolute
-    scientific or Lilipond notation.  If None, then no octave number is included.
+  - ``relative_to`` -- integer or string (default: 0); absolute note number, or
+    name in scientific notation; return note name with number of full octaves
+    above this note.  The default value of 0 corresponds to absolute scientific
+    or Lilipond notation.  Giving just note name with no octave number
+    (e.g. ``relative_to="A"``) implies ``no_octave=True``.
+
+  - ``no_octave`` -- boolean (default: False); whether to return only the note
+    name with no octave indication.
 
   - ``lilypond`` -- boolean (default: False); whether to use Lilypond
     format rather than Scientific Pitch Notation
@@ -286,56 +424,54 @@ def number_to_note(n, relative_to='C0', enharmonic=False, lilypond=False):
 
   OUTPUT:
 
-  - If ``relative_to`` is None, return the note name with no octave number.
-
-  - If ``relative_to`` is a note name or number, return the note name with
-    octave number relative to the given relative_to note.  This is the actual
-    number of full octaves contained in the interval from the relative_to note.
-    For example, with relative_to="A3", the C above A3 (C4 in scientific
-    notation) would be notated as "C0".  Notes below ``relative_to`` are given
-    with negative octave numbers.  Setting ``relative_to=0`` (the default) gives
-    the absolute pitch.
+  - Return the name and octave of the note that that is ``n`` half steps above
+    the note specified by the value of ``relative_true`` in scientific notation,
+    or in Lilypond notation with ``lilypond=True`` True.
 
   EXAMPLES:
 
     >>> print(number_to_note(32))
     Gs2
-    >>> print(number_to_note(32, relative_to=None))
+    >>> print(number_to_note(32, no_octave=True))
     Gs
     >>> print(number_to_note(32, enharmonic=True))
     Af2
 
     >>> print(number_to_note(32, lilypond=True))
     gs,
-    >>> print(number_to_note(32, relative_to=None, lilypond=True))
+    >>> print(number_to_note(32, no_octave=True, lilypond=True))
     gs
 
     >>> print(number_to_note(32, relative_to="A1"))
-    Gs0
+    F4
     >>> print(number_to_note(44, relative_to="A1"))
-    Gs1
+    F5
     >>> print(number_to_note(20, relative_to="A1"))
-    Gs-1
+    F3
+    >>> print(number_to_note(20, relative_to="A1", no_octave=True))
+    F
+    >>> print(number_to_note(20, relative_to="A"))
+    F
 
   """
-  rel = relative_to
-  if rel is None:
-    include_octave = False
-    rel_num = 0
+  if type(relative_to) is str:
+    name, octave = parse_note(relative_to)
+    if octave is None:
+      no_octave = True
+    rel = note_to_number(relative_to)
   else:
-    include_octave = True
-    rel_num = note_to_number(rel) if type(rel) is str else rel
-
-  m, octave = n%12, (n-rel_num)//12
+    rel = relative_to
+  n += rel
+  m, octave = n%12, n//12
   name = note_names.get(m)
   acc = ''
   if name is None:
     # try sharp
-    m_s, octave_s = (n-1)%12, (n-1-rel_num)//12
+    m_s, octave_s = (n-1)%12, (n-1)//12
     name_s = note_names.get(m_s)
     ind_s = 10 if name_s is None else ('F','C','G','D','A','E').index(name_s)
     # try flat
-    m_f, octave_f = (n+1)%12, (n+1-rel_num)//12
+    m_f, octave_f = (n+1)%12, (n+1)//12
     name_f = note_names.get(m_f)
     ind_f = 10 if name_f is None else ('B','E','A','D','G').index(name_f)
     flat = ind_f < ind_s
@@ -349,17 +485,49 @@ def number_to_note(n, relative_to='C0', enharmonic=False, lilypond=False):
       acc = sharp_symbol
 
   if not lilypond:
-    if not include_octave:
+    if no_octave:
       return name + acc
     return '{}{}{}'.format(name, acc, octave)
 
   # Lilypond
   name = name.lower()
-  if not include_octave:
+  if no_octave:
     return name + acc
   octave -= 3                 # since "c" means "C3"
   octave_symbol = "'" * octave if octave >= 0 else "," * abs(octave)
   return name + acc + octave_symbol
+
+#############################  Utility Functions  ##############################
+
+def relative_octave(note, base):
+  r""".
+  Return the octave number of ``note`` relative to ``base``.
+
+  INPUT:
+
+  - ``note, base`` -- strings, specifying absolute pitches in scientific notation
+
+  OUPTUT:
+
+  - the integer number of octaves from ``base`` to ``note``.
+
+  EXAMPLES:
+
+    >>> relative_octave("C4", "A3")
+    0
+    >>> relative_octave("A4", "A3")
+    1
+    >>> relative_octave("C3", "A3")
+    -1
+  """
+  n = note_to_number(note)
+  b = note_to_number(base)
+  d = n-b
+  oct = int(d/12)
+  if d<0:
+    oct -= 1
+  return oct
+
 
 #############################  Utility Functions  ##############################
 
@@ -375,6 +543,68 @@ def instrument_strings(instrument):
       return ('G2','D2','A1','E1')
     else:
       raise TypeError('unrecognized instrument: {}'.format(instrument))
+
+
+#############################  Utility Functions  ##############################
+
+def note_in_staff(note, top_notes=('C4','G4','C6'), lilypond=False):
+  r""".
+  Return data for producing Lilypond input to represent given note without ledger lines.
+
+  INPUT:
+
+  - ``note`` -- integer or string: number of half steps above C0; or
+    an absolute pitch in scientific notatation, or in lilypond notation if ``lilypond=True``.
+
+  OUTPUT:
+
+  - a pair (clef, octave) where
+
+    - ``clef`` -- the name of the clef to use, one of "bass", "tenor", or
+      "treble"
+
+    - ``octave`` -- an integer giving the number of ocataves up (if positive) or
+      down (if negative) to offset the printed note, using "8va", etc.
+
+  EXAMPLES:
+
+    >>> note_in_staff('G2')
+    ('bass', 0)
+
+    >>> note_in_staff('C4')
+    ('bass', 0)
+
+    >>> note_in_staff('A4')
+    ('treble', 0)
+
+    >>> note_in_staff('A5')
+    ('treble', 0)
+
+    >>> note_in_staff("a''", lilypond=True)
+    ('treble', 0)
+
+  """
+  if lilypond:
+    note = number_to_note(note_to_number(note,lilypond=True))
+  elif type(note) is not str:
+    note = number_to_note(note)
+  note, acc, note_oct = parse_note(note, extract_accidental=True)
+  num = note_to_number(note+str(note_oct)) # note without accidental
+  octave = 0
+  top_nums = [note_to_number(s) for s in top_notes]
+  if num <= top_nums[0]:
+    clef = "bass"
+  elif num <= top_nums[1]:
+    clef = "tenor"
+  elif num <= top_nums[2]:
+    clef = "treble"
+  else:
+    clef = "treble"
+    top = top_nums[2]
+    d = num - top
+    q = d//12
+    octave = q + 1
+  return (clef, octave)
 
 
 ################################################################################
@@ -425,7 +655,7 @@ def harmonic_interval(h):
 
 ################################  Computation  #################################
 
-def note_positions_near_harmonic_number(h):
+def note_positions_near_harmonic_number(h, octave=None):
   """.
   Return list of fingered note positions nearest each node of given harmonic.
 
@@ -433,20 +663,28 @@ def note_positions_near_harmonic_number(h):
 
   - ``h`` -- positive integer; the harmonic number
 
+  - ``octave`` -- optional octave number, a non-negative integer; if
+    given, limit output to just this octave
+
   OUTPUT:
 
-  - ordered list of pairs ``(n,m,e)`` where
+  - ordered list of pairs ``(ind, steps, off)`` where
 
-    - ``m`` is the index of the harmonic node; these will range over all numbers in [1,h-1] prime to h
+    - ``ind`` is the index of the harmonic node located at ind/h times the
+      string length. These will range over all postive integers less
+      than h and relatively prime to h.  But if ``octave=N`` is
+      specified, only values for which the fingered note at the node
+      is in the Nth octave of the string will be included (with N=0
+      the first octave).
 
-    - ``n`` is the number of half steps above the open string of the
+    - ``steps`` is the number of half steps above the open string of the
       note whose fingered location (in tempered pitch) is nearest the harmonic node
 
-    - ``e`` is the offset in cents (hundredths of a half step) from
+    - ``off`` is the offset in cents (hundredths of a half step) from
       the location of the fingered note to the harmonic node.
       Stopping the string at the location of the harmonic node will
-      produce a note that is ``e`` cents sharp if ``e > 0`` or ``|e|``
-      cents flat if ``e < 0``, relative to the note ``n`` tempered
+      produce a note that is ``off`` cents sharp if ``off > 0`` or ``|off|``
+      cents flat if ``off < 0``, relative to the note ``steps`` tempered
       half steps above the open string.
 
   EXAMPLES:
@@ -460,44 +698,89 @@ def note_positions_near_harmonic_number(h):
     >>> note_positions_near_harmonic_number(4)
     [(1, 5, -2), (3, 24, 0)]
 
+    >>> note_positions_near_harmonic_number(3, octave=0)
+    [(1, 7, 2)]
+    >>> note_positions_near_harmonic_number(3, octave=1)
+    [(2, 19, 2)]
+
   """
   if h < 0:
     raise TypeError('argument must be a positive integer')
   notes = []
-  for m in range(1,h):
-    if gcd(m,h) > 1: continue
-    lg = log(h/m,HS)
-    n = int(round(lg))
-    e = int(round(100*(lg-n)))
-    notes.append((h-m,n,e))
-  notes.reverse()
+  N = octave
+  for ind in range(1,h):
+    if gcd(ind,h) > 1: continue
+    if N is not None:
+      # octave N is between 1-2^-N and 1-2^-(N+1)
+      m = ind * 2**(N+1)
+      if not ( h * 2 * (2**N - 1) <= m ): continue
+      if not (m < h * (2**(N+1) - 1) ): break
+    lg = log(h/(h-ind),HS)
+    steps = int(round(lg))
+    off = int(round(100*(lg-steps)))
+    notes.append((ind,steps,off))
   return notes
 
 
 ################################  Computation  #################################
 
-def note_positions_near_harmonic_pitch(harmonic_pitch, strings=None, instrument=None):
-  """.
+def notes_near_harmonic_on_string(h, string, octave=None, lilypond=False):
+  r""".
+  Return list of notes nearest each node of given harmonic on given string.
 
-  Return list of all fingerings of a given note on given strings.
+  INPUT:
+
+  - ``h`` -- positive integer; the harmonic number
+
+  - ``string`` -- string; note name and octave of open string, in scientific notation
+
+  - ``octave`` -- optional octave number (0-based); if given, report only
+    harmonic nodes in that octave of the string.
+
+  - ``lilypond`` -- boolean (default: False); whether to give pitches in lilypond rather than
+    scientific notation
+
+  OUTPUT:
+
+  - a list of triples (ind, pitch, err):
+
+    - ``ind`` -- the index of the harmonic node, appearing at n/h of the string
+      length from the nut
+
+    - ``pitch`` -- string; the pitch in scientific notation (default), or
+      lilypond notation if lilypond=True
+
+    - ``err`` -- the offset in cents from the fingered note to the harmonic note
+
+  EXAMPLES:
+
+    >>> notes_near_harmonic_on_string(5, "A3", octave=0)
+    [(1, 'Cs4', -14), (2, 'Fs4', -16)]
+    >>> notes_near_harmonic_on_string(5, "A3", octave=0, lilypond=True)
+    [(1, "cs'", -14), (2, "fs'", -16)]
+
+  """
+  ans = []
+  for (ind,steps,off) in note_positions_near_harmonic_number(h, octave=octave):
+    pitch = number_to_note(steps, relative_to=string, lilypond=lilypond)
+    ans.append((ind,pitch,off))
+  return ans
+
+################################  Computation  #################################
+
+def note_positions_near_harmonic_pitch(harmonic_pitch, instrument_or_strings):
+  """.
+  Return list of all fingerings of a given harmonic pitch for given instrument or list of strings.
 
   INPUT:
 
   - ``harmonic_pitch`` -- an absolute pitch name
 
-  - ``strings`` -- optional list of string names and octaves in scientific pitch
-    notation.  For example, the 4 strings on a cello are denoted
-    ('A3','D3','G2','C2')
-
-  - ``instrument`` -- name of a stringed instrument
-
-  Exactly one of ``strings`` or ``instrument`` must be given.  If
-  ``instruments`` given, all four strings of the named instrument will be used.
-
+  - ``instrument_or_strings`` -- name of a stringed instrument, or list of note names for open strings
 
   OUTPUT:
 
-  - List of 5-tuples (hoff, stringnum, hnum, nodenum, fingnote, fingoff) of integers, where
+  - List of 5-tuples (stringnum, fingnote, fingoff, hnum, nodenum, hoff) of integers, where
 
     - ``stringnum`` -- the number of the string on which the harmonic is fingered
 
@@ -517,7 +800,7 @@ def note_positions_near_harmonic_pitch(harmonic_pitch, strings=None, instrument=
 
   Show all harmonics that sound like D one octave above middle C on the cello::
 
-    >>> for hh in note_positions_near_harmonic_pitch('D5', instrument='cello'): print(hh)
+    >>> for hh in note_positions_near_harmonic_pitch('D5', 'cello'): print(hh)
     (1, 'G3', -2, 4, 1, 0)
     (1, 'D5', 0, 4, 3, 0)
     (2, 'Bf2', 16, 6, 1, 2)
@@ -529,11 +812,26 @@ def note_positions_near_harmonic_pitch(harmonic_pitch, strings=None, instrument=
     (3, 'D4', 4, 9, 7, 4)
     (3, 'D5', 4, 9, 8, 4)
 
+    >>> strings = ['A3','D3','G2','C2']
+    >>> for hh in note_positions_near_harmonic_pitch('D5', strings): print(hh)
+    (1, 'G3', -2, 4, 1, 0)
+    (1, 'D5', 0, 4, 3, 0)
+    (2, 'Bf2', 16, 6, 1, 2)
+    (2, 'D5', 2, 6, 5, 2)
+    (3, 'D2', 4, 9, 1, 4)
+    (3, 'E2', 35, 9, 2, 4)
+    (3, 'Bf2', 18, 9, 4, 4)
+    (3, 'D3', 4, 9, 5, 4)
+    (3, 'D4', 4, 9, 7, 4)
+    (3, 'D5', 4, 9, 8, 4)
+
+
   """
-  if len([arg for arg in (strings, instrument) if arg is not None]) != 1:
-    raise TypeError('exactly one of "strings" or "instrument" must be given')
-  if instrument is not None:
-    strings = instrument_strings(instrument)
+  if type(instrument_or_strings) is str:
+    strings = instrument_strings(instrument_or_strings)
+  else:
+    strings = list(instrument_or_strings)
+    strings.sort(key=lambda s: note_to_number(s), reverse=True)
   hh = []
   # parse note name and octave
   h_note, h_octave = parse_note(harmonic_pitch)
@@ -556,7 +854,7 @@ def note_positions_near_harmonic_pitch(harmonic_pitch, strings=None, instrument=
 ###################################  Output  ###################################
 ################################################################################
 
-def print_harmonics(string, max_harmonic=16, octave=None):
+def print_harmonics(string, max_harmonic=8, octave=None, show_octave_numbers=True):
   """.
 
   Print a table of locations of all harmonic nodes on a single string.
@@ -566,7 +864,7 @@ def print_harmonics(string, max_harmonic=16, octave=None):
   - ``string`` -- string; note name of an open string, optionally
     including octave number in Scientific Pitch Notation
 
-  - ``max_harmonic`` -- positive integer (default: 16); largest
+  - ``max_harmonic`` -- positive integer (default: 8); largest
     harmonic number to include
 
   - ``octave`` -- optional non-negative integer; if given, show only
@@ -605,7 +903,7 @@ def print_harmonics(string, max_harmonic=16, octave=None):
 
   EXAMPLES:
 
-    >>> print_harmonics('A3', max_harmonic=4)
+    >>> print_harmonics('A3', max_harmonic=5)
     <BLANKLINE>
     A3 string:
     <BLANKLINE>
@@ -618,88 +916,62 @@ def print_harmonics(string, max_harmonic=16, octave=None):
     <BLANKLINE>
       4  1  A5   ( +0 cents):    D4   ( -2 cents)
       4  3  A5   ( +0 cents):    A5   ( +0 cents)
-
-    >>> print_harmonics('A', max_harmonic=4)
     <BLANKLINE>
-    A string:
+      5  1  Cs6  (-14 cents):    Cs4  (-14 cents)
+      5  2  Cs6  (-14 cents):    Fs4  (-16 cents)
+      5  3  Cs6  (-14 cents):    Cs5  (-14 cents)
+      5  4  Cs6  (-14 cents):    Cs6  (-14 cents)
+
+    >>> print_harmonics('A3', octave=1)
+    <BLANKLINE>
+    A3 string, 2nd octave:
     <BLANKLINE>
      ------- harmonic -------   --- finger at ---
     <BLANKLINE>
-      2  1  A1   ( +0 cents):    A1   ( +0 cents)
+      2  1  A4   ( +0 cents):    A4   ( +0 cents)
     <BLANKLINE>
-      3  1  E1   ( +2 cents):    E0   ( +2 cents)
-      3  2  E1   ( +2 cents):    E1   ( +2 cents)
+      3  2  E5   ( +2 cents):    E5   ( +2 cents)
     <BLANKLINE>
-      4  1  A2   ( +0 cents):    D0   ( -2 cents)
-      4  3  A2   ( +0 cents):    A2   ( +0 cents)
-
-    >>> print_harmonics('A', max_harmonic=8, octave=1)
+      5  3  Cs6  (-14 cents):    Cs5  (-14 cents)
     <BLANKLINE>
-    A string, 2nd octave:
+      7  4  G6   (-31 cents):    C5   (-33 cents)
+      7  5  G6   (-31 cents):    G5   (-31 cents)
     <BLANKLINE>
-     ------- harmonic -------   --- finger at ---
-    <BLANKLINE>
-      2  1  A1   ( +0 cents):    A    ( +0 cents)
-    <BLANKLINE>
-      3  2  E1   ( +2 cents):    E    ( +2 cents)
-    <BLANKLINE>
-      5  3  Cs2  (-14 cents):    Cs   (-14 cents)
-    <BLANKLINE>
-      7  4  G2   (-31 cents):    C    (-33 cents)
-      7  5  G2   (-31 cents):    G    (-31 cents)
-    <BLANKLINE>
-      8  5  A3   ( +0 cents):    D    ( -2 cents)
+      8  5  A6   ( +0 cents):    D5   ( -2 cents)
 
   """
-  _, string_octave = parse_note(string)
-  string_name = string
+  string_name, string_octave = parse_note(string)
   if string_octave is None:
-    # octave numbers relative to string; but none on fingered notes if octave given
-    string += '0'
-    hnote_rel = string
-    note_rel = string if octave is None else None
-  else:
-    # octave numbers absolute; but none on fingered notes if octave given
-    hnote_rel = 0
-    note_rel = 0 if octave is None else None
-  string_num = note_to_number(string)
-  max_harm_oct = floor(log(max_harmonic,2))
+    raise TypeError('string must be an abolute pitch')
+  print('\n{} string'.format(string),end='')
   if octave is not None:
-    print('\n{} string, {} octave:'.format(string_name, ordinal(octave)))
-  else:
-    print('\n{} string:'.format(string_name))
-  print('')
+    print(', {} octave'.format(ordinal(octave)),end='')
+  print(':\n')
   print(' ------- harmonic -------   --- finger at ---')
   for h in range(2,max_harmonic+1):
-    hint,hoff = harmonic_interval(h)
-    first = True
-    for node,n,e in note_positions_near_harmonic_number(h):
-      if octave is not None and floor(n/12) != octave: continue
-      note = number_to_note(string_num + n, relative_to=note_rel)
-      hnote = number_to_note(string_num + hint, relative_to=hnote_rel)
-      e_sgn = '+' if e>=0 else '-'
-      e = e_sgn + str(abs(e))
-      hoff_sgn = '+' if hoff>=0 else '-'
-      hoff_str = hoff_sgn + str(abs(hoff))
-      if first:
-        print('')
-        first = False
-      print(' {:>2} {:>2}  {:<4} ({:>3} cents):    {:<4} ({:>3} cents)'.format(h, node, hnote, hoff_str, note, e))
+    nodes = note_positions_near_harmonic_number(h,octave=octave)
+    if len(nodes) == 0: continue
+    hsteps, hoff = harmonic_interval(h)
+    hnote = number_to_note(hsteps, relative_to=string)
+    print('')
+    for ind,steps,off in nodes:
+      note = number_to_note(steps, relative_to=string)
+      print(' {:>2} {:>2}  {:<4} ({:>3} cents):    {:<4} ({:>3} cents)'.format(h, ind, hnote, signed(hoff), note, signed(off)))
 
 
 ###################################  Output  ###################################
 
 
-def print_harmonics_by_position(string, octaves=(0,), max_harmonic=16):
+def print_harmonics_by_position(string, octaves=(0,), max_harmonic=8):
   """.
 
-  Print a table of notes on given string in given octave, and the harmonics nearest them.
+  Print a table of notes on given string in given octaves, and the harmonics nearest them.
 
   INPUT:
 
-  - ``string`` -- note name of an open string
+  - ``string`` -- absolute note name of the open string
 
-  - ``octaves`` -- list of integers (default: [0]); which octaves to show (0
+  - ``octaves`` -- integer, or list of integers (default: 0); which octaves to show (0
     means first octave)
 
   - ``max_harmonic`` -- positive integer (default: 16); largest number harmonic
@@ -718,9 +990,8 @@ def print_harmonics_by_position(string, octaves=(0,), max_harmonic=16):
 
   - the harmonic number whose node occurs at the indicated note position
 
-  - the name of the note to which the sound of the harmonic is closest (in
-    tempered tuning), with number of '+' signs prepended indicating the number
-    of octaves above the open string
+  - the name and octave of the note (in scientific notation) to which the sound
+    of the harmonic is closest
 
   - number of cents sharp (positive) or flat (negative) that the harmonic sounds
     relative to the indicated note in tempered tuning
@@ -728,99 +999,86 @@ def print_harmonics_by_position(string, octaves=(0,), max_harmonic=16):
 
   EXAMPLES:
 
-    >>> print_harmonics_by_position('A', max_harmonic=8)
+    >>> print_harmonics_by_position('A3')
     <BLANKLINE>
-    A string:
+    A3 string:
     <BLANKLINE>
       --- finger at ---   ------ harmonic ------
     <BLANKLINE>
     1st octave
     <BLANKLINE>
-      B    (+31 cents):    8   A3   ( +0 cents)
+      B    (+31 cents):    8   A6   ( +0 cents)
     <BLANKLINE>
-      C    (-33 cents):    7   G2   (-31 cents)
-      C    (+16 cents):    6   E2   ( +2 cents)
+      C    (-33 cents):    7   G6   (-31 cents)
+      C    (+16 cents):    6   E6   ( +2 cents)
     <BLANKLINE>
-      Cs   (-14 cents):    5   Cs2  (-14 cents)
+      Cs   (-14 cents):    5   Cs6  (-14 cents)
     <BLANKLINE>
-      D    ( -2 cents):    4   A2   ( +0 cents)
+      D    ( -2 cents):    4   A5   ( +0 cents)
     <BLANKLINE>
-      Ef   (-17 cents):    7   G2   (-31 cents)
+      Ef   (-17 cents):    7   G6   (-31 cents)
     <BLANKLINE>
-      E    ( +2 cents):    3   E1   ( +2 cents)
+      E    ( +2 cents):    3   E5   ( +2 cents)
     <BLANKLINE>
-      F    (+14 cents):    8   A3   ( +0 cents)
+      F    (+14 cents):    8   A6   ( +0 cents)
     <BLANKLINE>
-      Fs   (-16 cents):    5   Cs2  (-14 cents)
+      Fs   (-16 cents):    5   Cs6  (-14 cents)
     <BLANKLINE>
-      G    (-31 cents):    7   G2   (-31 cents)
-    <BLANKLINE>
-      A    ( +0 cents):    2   A1   ( +0 cents)
+      G    (-31 cents):    7   G6   (-31 cents)
 
-    >>> print_harmonics_by_position('A', octaves=(0,1), max_harmonic=4)
+    >>> print_harmonics_by_position('A3', octaves=(0,1), max_harmonic=4)
     <BLANKLINE>
-    A string:
+    A3 string:
     <BLANKLINE>
       --- finger at ---   ------ harmonic ------
     <BLANKLINE>
     1st octave
     <BLANKLINE>
-      D    ( -2 cents):    4   A2   ( +0 cents)
+      D    ( -2 cents):    4   A5   ( +0 cents)
     <BLANKLINE>
-      E    ( +2 cents):    3   E1   ( +2 cents)
-    <BLANKLINE>
-      A    ( +0 cents):    2   A1   ( +0 cents)
+      E    ( +2 cents):    3   E5   ( +2 cents)
     <BLANKLINE>
     2nd octave
     <BLANKLINE>
-      E    ( +2 cents):    3   E1   ( +2 cents)
+      A    ( +0 cents):    2   A4   ( +0 cents)
     <BLANKLINE>
-      A    ( +0 cents):    4   A2   ( +0 cents)
+      E    ( +2 cents):    3   E5   ( +2 cents)
 
   """
-  _, string_octave = parse_note(string)
-  string_name = string
+  string_name, string_octave = parse_note(string)
   if string_octave is None:
-    # harmonic octave numbers relative to string
-    string += '0'
-    rel = string
+    raise TypeError('string must be an absolute pitch')
+  harms = []
+  if type(octaves) in (list,tuple):
+    octaves = tuple(octaves)
   else:
-    # octave numbers absolute
-    rel = 0
-  string_num = note_to_number(string)
-  notes = {h:note_positions_near_harmonic_number(h) for h in range(2,max_harmonic+1)}
-  harms = {}
-  for h,_ne in notes.items():
-    for _,n,e in _ne:
-      harms.setdefault(n,[])
-      harms[n].append((e,h))
-  for eh in harms.values():
-    eh.sort()
-  max_harm_oct = floor(log(max_harmonic,2))
-  print('\n{} string:'.format(string_name))
+    octaves = (octaves,)
+  print('\n{} string:'.format(string))
   print('')
   print('  --- finger at ---   ------ harmonic ------')
-  for a in octaves:
+  for oct in octaves:
+    harms = []
+    for h in range(1,max_harmonic+1):
+      hint, hoff = harmonic_interval(h)
+      hnote = number_to_note(hint, relative_to=string)
+      for _,steps,off in note_positions_near_harmonic_number(h, octave=oct):
+        harms.append((steps,off,h,hnote,hoff))
+    harms.sort()
     print('')
-    print('{} octave'.format(ordinal(a)))
-    for b in range(12):
-      n = a*12 + b + 1
-      if n not in harms: continue
-      print('')
-      for e,h in harms[n]:
-        hint, hoff = harmonic_interval(h)
-        hnote = number_to_note(string_num + hint, relative_to=rel)
-        e_sgn = '+' if e>=0 else '-'
-        e = e_sgn + str(abs(e))
-        note = number_to_note(string_num + n, relative_to=None)
-        hoff_sgn = '+' if hoff>=0 else '-'
-        hoff = hoff_sgn + str(abs(hoff))
-        print('  {:<4} ({:>3} cents):   {:>2}   {:<4} ({:>3} cents)'.format(note,e,h,hnote,hoff))
+    print('{} octave'.format(ordinal(oct)))
+    prev_note = None
+    for (steps,off,h,hnote,hoff) in harms:
+      note = number_to_note(steps,relative_to=string,no_octave=True)
+      if note != prev_note:
+        print('')
+        prev_note = note
+      print('  {:<4} ({:>3} cents):   {:>2}   {:<4} ({:>3} cents)'.format(note,signed(off),h,hnote,signed(hoff)))
+
 
 
 ###################################  Output  ###################################
 
-def print_harmonics_for_notes(music, strings=None, instrument=None):
+def print_harmonics_for_notes(music, instrument_or_strings):
   """.
   Print a table of harmonics and their fingered positions for a sequence of notes.
 
@@ -829,14 +1087,7 @@ def print_harmonics_for_notes(music, strings=None, instrument=None):
   - ``music`` -- string; a space-separated sequence of note/octave names in
     scientific notation
 
-  - ``strings`` -- optional list of string names and octaves in scientific pitch
-    notation.  For example, the 4 strings on a cello are denoted
-    ('A3','D3','G2','C2')
-
-  - ``instrument`` -- name of a stringed instrument
-
-  Exactly one of ``strings`` or ``instrument`` must be given.  If
-  ``instruments`` given, all four strings of the named instrument will be used.
+  - ``instrument_or_strings`` -- name of a stringed instrument, or a list of pitches of open strings
 
   EFFECT:
 
@@ -863,45 +1114,84 @@ def print_harmonics_for_notes(music, strings=None, instrument=None):
 
   EXAMPLES:
 
-    >>> print_harmonics_for_notes('G4 A4 B4', instrument='cello')
+    >>> print_harmonics_for_notes('G4 A4 B4', 'cello')
     <BLANKLINE>
-    G4    IV Ef0   16.  6  1
-    G4   III C0    -2.  4  1
-    G4   III G2     0.  4  3
-    G4    IV G2     2.  6  5
+      --- harmonic ---    -------- fingered --------
+      note number node    string oct note   (offset)
+      ----------------    --------------------------
     <BLANKLINE>
-    A4    II A0     2.  3  1
-    A4     I A1     0.  2  1
-    A4    II A1     2.  3  2
+       G4     6     1       IV    0   Ef (+16 cents)
+       G4     4     1      III    0   C  ( -2 cents)
+       G4     4     3      III    2   G  ( +0 cents)
+       G4     6     5       IV    2   G  ( +2 cents)
     <BLANKLINE>
-    B4   III B0   -14.  5  1
-    B4   III E0   -16.  5  2
-    B4   III B1   -14.  5  3
-    B4   III B2   -14.  5  4
+       A4     3     1       II    0   A  ( +2 cents)
+       A4     2     1        I    1   A  ( +0 cents)
+       A4     3     2       II    1   A  ( +2 cents)
+    <BLANKLINE>
+       B4     5     1      III    0   B  (-14 cents)
+       B4     5     2      III    0   E  (-16 cents)
+       B4     5     3      III    1   B  (-14 cents)
+       B4     5     4      III    2   B  (-14 cents)
+
+    >>> strings = ('A3', 'D3', 'G2', 'C2')
+    >>> print_harmonics_for_notes('G4 A4 B4', 'cello')
+    <BLANKLINE>
+      --- harmonic ---    -------- fingered --------
+      note number node    string oct note   (offset)
+      ----------------    --------------------------
+    <BLANKLINE>
+       G4     6     1       IV    0   Ef (+16 cents)
+       G4     4     1      III    0   C  ( -2 cents)
+       G4     4     3      III    2   G  ( +0 cents)
+       G4     6     5       IV    2   G  ( +2 cents)
+    <BLANKLINE>
+       A4     3     1       II    0   A  ( +2 cents)
+       A4     2     1        I    1   A  ( +0 cents)
+       A4     3     2       II    1   A  ( +2 cents)
+    <BLANKLINE>
+       B4     5     1      III    0   B  (-14 cents)
+       B4     5     2      III    0   E  (-16 cents)
+       B4     5     3      III    1   B  (-14 cents)
+       B4     5     4      III    2   B  (-14 cents)
 
   """
   romans = ['I','II','III','IV']
-  if strings is None:
-    if instrument is None:
-      raise TypeError('Either "strings" or "instrument" must be given')
-    strings = instrument_strings(instrument)
+  if type(instrument_or_strings is str):
+    strings = instrument_strings(instrument_or_strings)
+  else:
+    strings = list(instrument_or_strings)
+    strings.sort(key=lambda s: note_to_number(s), reverse=True)
   str_nums = [note_to_number(s) for s in strings]
+  print('  --- harmonic ---    -------- fingered --------')
+  print('  note number node    string oct note   (offset)')
+  print('  ----------------    --------------------------')
+  def sort_key(s):
+    return (note_to_number(s[1])-str_nums[s[0]], s[0])
   for note in music.split():
     print('')
-    ss = note_positions_near_harmonic_pitch(note, strings=strings)
-    ss.sort(key=lambda s: (note_to_number(s[1])-str_nums[s[0]], s[0]))
+    ss = note_positions_near_harmonic_pitch(note, strings)
+    ss.sort(key=sort_key)
     for str_ind,fing,fing_off,harm,node,_ in ss:
-      fing_num = note_to_number(fing)
-      fing_rel = number_to_note(fing_num, relative_to=strings[str_ind])
-      print('{:<4} {:>3} {:<4} {:>3}. {:>2} {:>2}'.format(note, romans[str_ind], fing_rel, fing_off, harm, node))
+      string = strings[str_ind]
+      fing_oct = relative_octave(fing,string)
+      fing_note,_ = parse_note(fing)
+      print('   {:<3} {:>4}   {:>3}      {:>3}   {:>2}   {:<2} ({:>3} cents)'.format(
+        note,harm,node,romans[str_ind],fing_oct,fing_note,signed(fing_off)))
 
-###################################  Output  ###################################
+
+
+################################################################################
+##############################  Lilypond Output  ###############################
+################################################################################
  
 
 def lilypond_harmonics(filename, string, octave=0, max_harmonic=16,
                        clef=None, instrument="cello",
                        note_spacing=200, staff_spacing=10,
-                       append=False, page_break=False):
+                       append=False, page_break=False,
+                       lilypond_command='lilypond', process=False):
+  
   """.
 
   Write lilypond output to engrave a harmonic fingering chart on given string
@@ -911,7 +1201,7 @@ def lilypond_harmonics(filename, string, octave=0, max_harmonic=16,
 
   - ``filename`` -- name of Lilypond file in which to write the output
 
-  - ``string`` -- pair (name,octave)  where ``name`` is the letter name and ``octave`` is Lilypond octave number
+  - ``string`` -- pitch in scientific notation, or pair (name,octave)  where ``name`` is the letter name and ``octave`` is Lilypond octave number
 
   - ``octave`` -- non-negative integer (default: 0) or list of such; which
     octave or octaves of the string to show; 0 means the first ocatve.
@@ -933,7 +1223,18 @@ def lilypond_harmonics(filename, string, octave=0, max_harmonic=16,
   - ``page_break`` -- boolean (default: False); whether to insert a page break
     before the output; this is ignored unless ``append`` is True
 
+  - ``lilypond_command`` -- string (default: "lilypond"); shell
+    command to run, if ``process=True``
+
+  - ``process`` -- boolean (default: False); whether to run lilypond
+    on ``filename`` to produce the pdf file.
+
+
   OUTPUT:
+
+  - None
+
+  EFFECT:
 
   - Writes Lilypond source to the named file.  Subsequent processing by Lilypond
     will produce a pdf file showing a double staff, with unmetered bars.  Each
@@ -950,182 +1251,150 @@ def lilypond_harmonics(filename, string, octave=0, max_harmonic=16,
       note where the harmonic node occurs.
 
   """
-  if type(octave) in (list,tuple):
-    kw = {}
-    kw['filename'] = filename
-    kw['string'] = string
-    kw['max_harmonic'] = max_harmonic
-    kw['clef'] = clef
-    kw['instrument'] = instrument
-    kw['note_spacing'] = note_spacing
-    kw['staff_spacing'] = staff_spacing
-    kw['page_break'] = page_break
+  if type(octave) in (list, tuple):
+    first = True
     for i,n in enumerate(octave):
-      kw['octave'] = n
-      kw['append'] = i > 0
-      lilypond_harmonics(**kw)
+      args = {}
+      args['filename'] = filename
+      args['string'] = string
+      args['octave'] = n
+      args['max_harmonic'] = max_harmonic
+      args['clef'] = clef
+      args['instrument'] = instrument
+      args['note_spacing'] = note_spacing
+      args['staff_spacing'] = staff_spacing
+      args['append'] = append or not first
+      if type(page_break) in (list, tuple):
+        args['page_break'] = page_break[i]
+      else:
+        args['page_break'] = page_break
+      args['lilypond_command'] = lilypond_command
+      lilypond_harmonics(**args)
+      first = False
+    if process:
+      os.system('{} {}'.format(lilypond_command, filename))
     return
 
-  string_name, string_octave = string
-  string_num = note_to_number(string_name)
-  string_name = number_to_note(string_num)
-
-  loc_ottava = 0
-  if clef is None:
-    min_note_num = string_num + 12 * (string_octave + octave)
-    if min_note_num <= 2:       # d
-      clef = "bass"
-    elif min_note_num <= 9:     # a
-      clef = "tenor"
-    elif min_note_num <= 23:    # b'
-      clef = "treble"
-    else:
-      clef = "treble"
-      loc_ottava = (min_note_num - 23)//12 + 1
-
-
-  line = lambda s: s + '\n'
-
+  lily_harmonic = ""
+  lily_fingered = ""
+  h_oct_prev = None
+  f_oct_prev = None
+  for h in range(2,max_harmonic+1):
+    h_rel, h_off = harmonic_interval(h)
+    h_off = signed(h_off)
+    h_note = number_to_note(h_rel, relative_to=string, lilypond=True)
+    h_clef, h_oct = note_in_staff(h_note, lilypond=True)
+    first = True
+    for _, f_note, f_off in notes_near_harmonic_on_string(h, string, octave, lilypond=True):
+      f_off = signed(f_off)
+      hh = ''
+      ff = ''
+      if first:
+        if h_oct == h_oct_prev:
+          h_oct_str = ''
+        else:
+          h_oct_str = ' \\ottava #{}'.format(h_oct)
+          h_oct_prev = h_oct
+        hh += '  % {0}\n\\bar "|"\n'.format(h)
+        hh += ' \\cadenzaOn\n'
+        ff += ' \\cadenzaOn\n'
+        hh += '  \\clef "{}"{} {}\\harmonic_\\markup{{"{}"}}^\\markup{{"{}"}}\n'.format(h_clef, h_oct_str, h_note, h_off, h)
+        first = False
+      else:
+        hh = '  \\clef "{}" {}\\harmonic\n'.format(h_clef, h_note)
+      lily_harmonic += hh
+      f_clef, f_oct = note_in_staff(f_note, lilypond=True)
+      if f_oct == f_oct_prev:
+        f_oct_str = ''
+      else:
+        f_oct_prev = f_oct
+        f_oct_str = ' \\ottava #{}'.format(f_oct)
+      ff += '  \\clef "{}"{} {}_\\markup{{"{}"}}\n'.format(f_clef, f_oct_str, f_note, f_off)
+      lily_fingered += ff
+    if first == True:
+      continue
+      F.write('\n')
+    
+    lily_harmonic += '  \\cadenzaOff\n'
   
-  suff = '{}{}{}'.format(string_name, chr(ord('a')+string_octave), chr(ord('a')+octave))
+  # suffix to use for music variables, indicating string name and octave
+  string_name, _ = parse_note(string)
+  suff = '{}{}'.format(string_name, chr(ord('a')+octave))
 
   pre = ''
-  pre += line('\\' + 'version "2.20.0"')
-  pre += line('\\include "english.ly"')
-  pre += line('  \\header')
-  pre += line('  {')
-  pre += line('    copyright = "All rights to this work are waived under Creative Commons Licens CC0.  See https://creativecommons.org/publicdomain/zero/1.0/"')
-  pre += line('    tagline = ##f')
-  pre += line('    print-all-headers = ##t')
-  pre += line('  }')
-  pre += line('#(set-default-paper-size "letter")')
-  pre += line('global = ')
-  pre += line('{')
-  pre += line('  \\omit Score.TimeSignature')
-  pre += line('  \\cadenzaOn')
-  pre += line('}')
+  pre += '\\version "2.20.0"\n'
+  pre += '\\include "english.ly"\n'
+  pre += '  \\header\n'
+  pre += '  {\n'
+  pre += '    copyright = \\markup{\n'
+  pre += '      \\center-column {\n'
+  pre += '        "All rights to this work are granted under Creative Commons License CC0."\n'
+  pre += '        "See https://creativecommons.org/publicdomain/zero/1.0/"\n'
+  pre += '    }\n'
+  pre += '  }\n'
+  pre += '    tagline = ##f\n'
+  pre += '    print-all-headers = ##t\n'
+  pre += '  }\n'
+  pre += '#(set-default-paper-size "letter")\n'
+  pre += 'global = \n'
+  pre += '{\n'
+  pre += '  \\omit Score.TimeSignature\n'
+  pre += '}\n'
 
   post = ''
-  post += line('\\score')
-  post += line('{')
-  post += line('  \\header')
-  post += line('  {')
-  post += line('    tagline = ##f')
-  post += line('    piece = \\markup \\column {{ "{} {}-string, {} octave" \\vspace #1 }}'.format(instrument.title(), string_name, ordinal(octave)))
-  post += line('  }')
-  post += line('  \\new StaffGroup')
-  post += line('  <<')
-  post += line('    \\new Staff = "pitch" \\with { instrumentName = "pitch" }')
-  post += line('    <<')
-  post += line('      \\new Voice = "pitch" {{ \\pitches{} }}'.format(suff))
-  post += line('    >>')
-  post += line('    \\new Staff = "location" \\with { instrumentName = "location" }')
-  post += line('    << \\locations{} >>'.format(suff))
-  post += line('    \\new Lyrics \\with { alignAboveContext = "pitch" }')
-  post += line('    {')
-  post += line('      \\lyricsto "pitch" \\nums{}'.format(suff))
-  post += line('    }')
-  post += line('  >>')
-  post += line('}')
-  post += line('')
-  post += line('\\layout')
-  post += line('{')
-  post += line('  \\context {')
-  post += line('    \\StaffGroup')
-  post += line('    \\consists #Span_stem_engraver')
-  post += line('  }')
-  post += line('  \\context {')
-  post += line('    \\Score')
-  post += line('    \\override SpacingSpanner.base-shortest-duration = #(ly:make-moment 1/{})'.format(note_spacing))
-  post += line('  }')
-  post += line('}')
-  post += line('  ')
-  post += line('\\paper')
-  post += line('{')
-  post += line('  system-system-spacing = #\'((basic-distance . 1) (padding . {}))'.format(staff_spacing))
-  post += line('  top-margin = 25')
-  post += line('  left-margin = 25')
-  post += line('  right-margin = 25')
-  post += line('  ragged-bottom = ##t')
-  post += line('  print-page-number = ##f')
-  post += line('}')
+  post += '\\score\n'
+  post += '{\n'
+  post += '  \\header\n'
+  post += '  {\n'
+  post += '    tagline = ##f\n'
+  post += '    piece = \\markup \\column {{ "{} {}-string, {} octave" \\vspace #1 }}\n'.format(instrument.title(), string_name, ordinal(octave))
+  post += '  }\n'
+  post += '  \\new StaffGroup\n'
+  post += '  <<\n'
+  post += '    \\new Staff = "pitch" \\with { instrumentName = "pitch" }\n'
+  post += '    <<\n'
+  post += '      \\new Voice = "pitch" {{ \\pitches{} }}\n'.format(suff)
+  post += '    >>\n'
+  post += '    \\new Staff = "location" \\with { instrumentName = "location" }\n'
+  post += '    << \\locations{} >>\n'.format(suff)
+  post += '  >>\n'
+  post += '}\n'
+  post += '\n'
+  post += '\\layout\n'
+  post += '{\n'
+  post += '  \\context {\n'
+  post += '    \\StaffGroup\n'
+  post += '    \\consists #Span_stem_engraver\n'
+  post += '  }\n'
+  post += '  \\context {\n'
+  post += '    \\Score\n'
+  post += '    \\override SpacingSpanner.base-shortest-duration = #(ly:make-moment 1/{})\n'.format(note_spacing)
+  post += '  }\n'
+  post += '}\n'
+  post += '  \n'
+  post += '\\paper\n'
+  post += '{\n'
+  post += '  system-system-spacing = #\'((basic-distance . 1) (padding . {}))\n'.format(staff_spacing)
+  post += '  top-margin = 25\n'
+  post += '  left-margin = 25\n'
+  post += '  right-margin = 25\n'
+  post += '  ragged-bottom = ##t\n'
+  post += '  print-page-number = ##f\n'
+  post += '}\n'
 
-  nums = line('nums{} = \\lyricmode'.format(suff))
-  nums += '{'
+  pitches = 'pitches{} =\n'.format(suff)
+  pitches += '{\n'
+  pitches += '  \\global\n'
+  pitches += lily_harmonic
+  pitches += '  \\bar "|."\n'
+  pitches += '}\n'
 
-  pitches = line('pitches{} ='.format(suff))
-  pitches += line('{')
-  pitches += line('  \\global')
-  pitches += line('  \\clef "treble"')
-
-  locations = line('locations{} ='.format(suff))
-  locations += line('{')
-  locations += line('  \\global')
-  locations += line('  \\clef "{}"'.format(clef))
-  locations += line('  \\ottava #{}'.format(loc_ottava))
-
-  for h in range(2,max_harmonic+1):
-    hint,hoct,hoff = harmonic_interval(h)
-    hoct,hint = hint//12, hint%12
-    hnote_num = hint + string_num
-    q,r = hnote_num // 12, hnote_num % 12
-    hoct += q + string_octave + octave
-    hnote_num = r
-    hnote = number_to_note(hnote_num, lower_case=True)
-
-    if hoct >= 0:
-      hoct_str = "'"*hoct
-    else:
-      hoct_str = ","*abs(hoct)
-
-    hoff_sgn = '+' if hoff>=0 else '-'
-    hoff_str = hoff_sgn + str(abs(hoff))
-
-    first = True
-
-    for _,n,e in note_positions_near_harmonic_number(h):
-      if floor((n-1)/12) != octave: continue
-      note_num = n + string_num
-      note_octave = string_octave
-      q,r = note_num // 12, note_num % 12
-      note_num = r
-      note_octave += q
-      note = number_to_note(note_num, lower_case=True)
-      if note_octave >= 0:
-        note_octave_str = "'"*note_octave
-      else:
-        note_octave_str = ","*abs(note_octave)
-      e_sgn = '+' if e>=0 else '-'
-      e_str = e_sgn + str(abs(e))
-
-      if first:
-        first = False
-
-        nums += '\n  "{}"'.format(h)
-
-        pitches += line('  % {}'.format(h))
-        pitches += line('  \\bar "|"')
-        if hoct < 1:
-          ottava = -1
-        elif hoct > 2:
-          ottava = min(2,hoct - 2)
-        else:
-          ottava = 0
-        pitches += line('  \\ottava #{}'.format(ottava))
-        pitches += line('  {}{} \\harmonic _\\markup{{"{}"}}'.format(hnote, hoct_str, hoff_str))
-
-        locations += line('  % {}'.format(h))
-        locations += line('  {}{} _\\markup{{"{}"}}'.format(note, note_octave_str, e_str))
-
-      else:
-        nums += ' ""'
-        pitches += line('  {}{} \\harmonic'.format(hnote, hoct_str))
-        locations += line('  {}{} _\\markup{{"{}"}}'.format(note, note_octave_str, e_str))
-
-  nums += line('\n}')
-  pitches += line('\\bar "|."')
-  pitches += line('}')
-  locations += line('}')
+  locations = 'locations{} =\n'.format(suff)
+  locations += '{\n'
+  locations += '  \\global\n'
+  locations += lily_fingered
+  locations += '  \\bar "|."\n'
+  locations += '}\n'
 
   if append:
     F = open(filename,'a')
@@ -1137,9 +1406,8 @@ def lilypond_harmonics(filename, string, octave=0, max_harmonic=16,
       F.write('\n\n')
   else:
     F = open(filename,'w')
+
   F.write(pre)
-  F.write('\n')
-  F.write(nums)
   F.write('\n')
   F.write(pitches)
   F.write('\n')
@@ -1150,65 +1418,61 @@ def lilypond_harmonics(filename, string, octave=0, max_harmonic=16,
 
   F.close()
 
+  if process:
+    os.system('{} {}'.format(lilypond_command, filename))
 
-###################################  Output  ###################################
 
-def lilypond_cello_strings(filename_base):
-  """
-  Produce a PDF fingering chart of harmonics on cello, for first 3 octaves on
-  all strings.
 
-  Requires pdftk and lilipond present on the system.
+##############################  Lilypond Output  ###############################
+
+
+def lilypond_cello_harmonics(filename_base, octaves=(0,1,2), intro_file=None, lilypond_command='lilypond'):
+  r""".
+
+  Produce a PDF fingering chart of harmonics on cello, for first 3
+  octaves on all strings.
+
+  Requires lilipond present on the system.
 
   For some reason the C string requires different spacing from the other
-  strings, so is processes separately and a single PDF produced using pdftk.
+  strings, so is processed separately and a single PDF produced using pdftk.
 
   INPUT:
 
-  - ``filename_base`` -- base of the filenames to use
+  - ``filename_base`` --  base of filenames to use for .ly and .pdf files
+
+  - ``octaves`` -- tuple (default: (0,1,2)); octave numbers to include
+    on each string, with 0 meaning the first octave.
+
+  - ``intro_file`` -- optional string, giving name of a lilypond file to include as front matter.
+
+  - ``lilypond_command`` -- string (default: "lilypond"); command to run to process the lilypond file
 
   OUTPUT:
 
-  - produces a pdf file whose name is filename_base with ".pdf" appended;
-    intermediate output is in other files with names starting with filename_base
+  - None
+
+  OUTPUT:
+
+  - writes ``filename_base.ly`` and runs ``lilypond_command`` on it to
+    produce ``filename_base.pdf` with typeset harmonics.  For each
+    octave on each string, shows a double staff with harmonic pitces
+    on upper staff and all possible fingerings on lower staff.
 
   """
-  import os
 
-  file0 = filename_base+'_tmp0'
-  file1 = filename_base+'_tmp1'
-  file2 = filename_base+'_tmp2'
+  filename = filename_base + '.ly'
 
-  def process(f,s,o,a,b,**kwargs):
-    lilypond_harmonics(f+'.ly',s,octave=o,append=a,page_break=b,**kwargs)
+  F = open(filename,'w')
+  if intro_file is not None:
+    F.write('\\include "{}"\n\n'.format(intro_file))
+  F.close()
 
-  s = ('a',0)
-  process(file0,s,0,False,False)
-  process(file0,s,1,True,True)
-  process(file0,s,2,True,False)
-
-  s = ('d',0)
-  process(file0,s,0,True,False)
-  process(file0,s,1,True,True)
-  process(file0,s,2,True,False)
-
-  s = ('g',-1)
-  process(file0,s,0,True,False)
-  process(file0,s,1,True,True)
-  process(file0,s,2,True,False)
-
-  s = ('c',-1)
-  process(file1,s,0,False,False,note_spacing=100)
-  process(file2,s,1,False,True)
-  process(file2,s,2,True,False)
-
-  os.system('lilypond {}'.format(file0))
-  os.system('lilypond {}'.format(file1))
-  os.system('lilypond {}'.format(file2))
-  pdf0 = file0+'.pdf'
-  pdf1 = file1+'.pdf'
-  pdf2 = file2+'.pdf'
-  os.system('pdftk A={} B={} C={} cat A B C output {}'.format(pdf0,pdf1,pdf2,filename_base+'.pdf'))
+  args = {'octave':octaves, 'page_break':(True,True,False), 'staff_spacing':5, 'append':True}
+  lilypond_harmonics(filename, "A3", **args)
+  lilypond_harmonics(filename, "D3", **args)
+  lilypond_harmonics(filename, "G2", **args)
+  lilypond_harmonics(filename, "C2", process=True, **args)
 
 
 
